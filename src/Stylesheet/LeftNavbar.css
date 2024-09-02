@@ -1,0 +1,5 @@
+.SelectedItem:hover{
+    color: orange !important;
+    text-decoration: underline !important;
+    font-size: 18px;
+}

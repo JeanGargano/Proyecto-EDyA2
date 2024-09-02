@@ -1,0 +1,10 @@
+.ColorPage {
+    background-color: #182637 !important;
+    color: white !important;
+}
+
+.ItemSelected:hover{
+
+    font-size: 18px;
+    text-decoration: underline;
+}
