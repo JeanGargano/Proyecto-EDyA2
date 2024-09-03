@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Stylesheet/LeftNavbar.css'
+import '../../Stylesheet/Home/LeftNavbar.css';
 
 export default function Publisher() {
   return (

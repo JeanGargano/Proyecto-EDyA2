@@ -1,4 +1,4 @@
-import '../Stylesheet/output.css';
+import '../../Stylesheet/Home/output.css';
 import Navbar from './Navbar.js';
 import Publisher from './Publisher.js';
 import LeftSidebar from './LeftNavbar.js';
