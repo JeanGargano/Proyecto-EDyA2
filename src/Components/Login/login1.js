@@ -1,6 +1,8 @@
 import '../../Stylesheet/Login/login1.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
   return (
     <div className="login1-container">
       <div className="login1-content">
@@ -40,5 +42,7 @@ const Login = () => {
     </div>
   );
 }
+
+
 
 export default Login;

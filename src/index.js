@@ -10,9 +10,9 @@ root.render(
   <React.StrictMode>
     <Router> 
       <Routes>
-        <Route path="/" element={<App />} /> {/* Página principal */}
-        <Route path="/login" element={<Login />} /> {/* Página de Login */}
+      <Route path="/" element={<Login />} /> {/* Página de Login */}
+        <Route path="/home" element={<App />} /> {/* Página principal */}
       </Routes>
     </Router>
-  </React.StrictMode>
+  </React.StrictMode> 
 );

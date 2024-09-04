@@ -71,7 +71,6 @@
   font-size: 1.5rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .register-button {
@@ -82,7 +81,6 @@
   font-size: 1.5rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
   margin-top: 1rem;
 }
 
