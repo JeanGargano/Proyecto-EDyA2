@@ -5,6 +5,7 @@ import LeftSidebar from './LeftNavbar.js';
 import RightSidebar from './ListFriend.js';
 import Post from './Post.js';
 
+
 function App() {
   return (
     <div className="App">
