@@ -6,7 +6,7 @@ const Post = () => {
       {/* Información del usuario */}
       <div className="flex items-center mb-4">
         <img
-          src='/media/picture/images.png' // Reemplaza con la URL de la imagen del usuario
+          src='/media/picture/images.png'
           alt="Usuario"
           className="w-12 h-12 rounded-full mr-4"
         />
@@ -46,7 +46,7 @@ const Post = () => {
       {/* Comentario */}
       <div className="bg-[#182637] p-3 rounded-lg flex items-start space-x-4">
         <img
-          src='/media/picture/images.png' // Reemplaza con la URL de la imagen del usuario del comentario
+          src='/media/picture/images.png'
           alt="Usuario comentario"
           className="w-8 h-8 rounded-full"
         />
