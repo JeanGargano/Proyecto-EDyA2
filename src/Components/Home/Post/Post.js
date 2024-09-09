@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const Post = ({ id, content, handleDeletePost }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
