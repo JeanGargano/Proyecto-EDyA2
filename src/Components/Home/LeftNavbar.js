@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Stylesheet/LeftNavbar.css'
+import '../../Stylesheet/Home/LeftNavbar.css';
 
 const SidebarItem = ({ icon, label }) => (
   <div className="bg-[#182637] SelectedItem flex items-center space-x-2 p-2 w-full rounded-md cursor-pointer">

@@ -1,19 +1,26 @@
-import React from 'react';
-import '../Stylesheet/LeftNavbar.css'
+import React, { useState } from 'react';
+import '../../Stylesheet/Home/LeftNavbar.css';
 
-export default function Publisher() {
+// Componente Publisher (publicador)
+const Publisher = ({ onPublish }) => {
+  const [content, setContent] = useState('');
+
+  const handleClear = () => {
+    setContent(''); // Limpiamos el campo de texto cuando se hace clic en "Vaciar"
+  };
+
   return (
     <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10">
       <div className="flex items-center space-x-4 mb-4">
-      <img
+        <img
           src='/media/picture/images.png'
           alt="User Avatar"
           className="rounded-full w-10 h-10 object-cover"
         />
         <input
           type="text"
-          value={null}
-          onChange={null}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           placeholder="¿Cuál es tu duda?"
           className="w-full px-4 py-2 rounded-full bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -38,7 +45,7 @@ export default function Publisher() {
           <span>Foto</span>
         </button>
         <button
-          onClick={null}
+          onClick={handleClear}
           className="flex items-center space-x-2 text-orange-500 hover:text-orange-700"
         >
           <svg
@@ -57,10 +64,15 @@ export default function Publisher() {
           </svg>
           <span>Vaciar</span>
         </button>
-        <button className="flex items-center space-x-2 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800">
+        <button
+          onClick={() => onPublish(content)}
+          className="flex items-center space-x-2 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800"
+        >
           Publicar
         </button>
       </div>
     </div>
   );
-}
+};
+
+export default Publisher;
