@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 
 
 
-
-
 const Form = ({ onActualizarNombre, onActualizarProfesion }) => {
     const { register, formState: { errors }, handleSubmit } = useForm({
 

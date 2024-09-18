@@ -7,11 +7,15 @@ const PostFeed = () => {
   const [posts, setPosts] = useState([]);
 
   const handlePublish = (content) => {
-    const newPost = {
-      id: uuidv4(), // Generar un ID único
-      content: content
-    };
-    setPosts([newPost, ...posts]);
+    if (content == ""){
+      return;
+    }else{
+      const newPost = {
+        id: uuidv4(), // Generar un ID único
+        content: content
+      };
+      setPosts([newPost, ...posts]);
+    }
   };
 
   const handleDeletePost = (id) => {
