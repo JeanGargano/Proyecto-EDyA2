@@ -9,6 +9,11 @@ const Publisher = ({ onPublish }) => {
     setContent(''); // Limpiamos el campo de texto cuando se hace clic en "Vaciar"
   };
 
+  const handlePublish = () =>{
+    onPublish(content);
+    handleClear();
+  }
+
   return (
     <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10">
       <div className="flex items-center space-x-4 mb-4">
@@ -65,7 +70,7 @@ const Publisher = ({ onPublish }) => {
           <span>Vaciar</span>
         </button>
         <button
-          onClick={() => onPublish(content)}
+          onClick={handlePublish}
           className="flex items-center space-x-2 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800"
         >
           Publicar
