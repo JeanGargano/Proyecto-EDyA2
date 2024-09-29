@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../../Stylesheet/Home/LeftNavbar.css';
 
-// Componente Publisher (publicador)
 const Publisher = ({ onPublish }) => {
   const [content, setContent] = useState('');
 
@@ -9,16 +8,18 @@ const Publisher = ({ onPublish }) => {
     setContent(''); // Limpiamos el campo de texto cuando se hace clic en "Vaciar"
   };
 
-  const handlePublish = () =>{
-    onPublish(content);
-    handleClear();
-  }
-
+  const handlePublish = () => {
+    if (content.trim() !== "") {
+      onPublish(content); // Llama a onPublish con el contenido del post
+      setContent(''); // Limpiar el campo después de publicar
+    }
+  };
+  
   return (
     <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10">
       <div className="flex items-center space-x-4 mb-4">
         <img
-          src='/media/picture/images.png'
+          src="/media/picture/images.png"
           alt="User Avatar"
           className="rounded-full w-10 h-10 object-cover"
         />
