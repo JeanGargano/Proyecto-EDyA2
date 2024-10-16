@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { addUserInfo } from "./service/UserInfService.js";
+import { useNavigate } from "react-router-dom";
 
 const Form = ({ onActualizarNombre, onActualizarProfesion, onPost }) => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -18,7 +19,11 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, onPost }) => {
         }
     };
 
+    const navigate = useNavigate();
 
+    const handleClick = () => {
+        navigate('/home');
+    }
     return (
         <div className="flex-1 bg-[#182637] shadow-[0_20px_40px_rgba(255,255,255,0.3)]">
             <form className="grid grid-cols-2 gap-2" onSubmit={handleSubmit(onSubmit)}>
@@ -95,7 +100,7 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, onPost }) => {
                     <h3 className="font-bold text-white mb-2">Opciones</h3>
                     <div className="grid grid-cols-2 gap-2 mt-2">
                         <input type="button" value="Soporte" className="cursor-pointer flex items-center space-x-2 bg-[#ff914d] text-white px-4 py-2 rounded-lg hover:bg-orange-800" />
-                        <input type="button" value="Volver" className="cursor-pointer flex items-center space-x-2 bg-[#ff914d] text-white px-4 py-2 rounded-lg hover:bg-orange-800" />
+                        <input type="button" value="Volver" onClick={handleClick} className="cursor-pointer flex items-center space-x-2 bg-[#ff914d] text-white px-4 py-2 rounded-lg hover:bg-orange-800" />
                         <input type="button" value="Eliminar cuenta" className="cursor-pointer flex items-center space-x-2 bg-[#ff914d] text-white px-4 py-2 rounded-lg hover:bg-orange-800" />
                     </div>
                 </section>

@@ -1,15 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
 
 const InfoUserLeft = ({ nombreCompleto, profesion }) => {
     const [preview, setPreview] = useState(null);
-    const navigate = useNavigate();
 
-    const handleClick = () => {
-        navigate('/home');
-    }
     // Manejador para seleccionar la imagen
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -52,7 +47,6 @@ const InfoUserLeft = ({ nombreCompleto, profesion }) => {
             </div>
             <h2 className="text-white text-[20px] font-semibold mb-2">{nombreCompleto || "Nombre completo"}</h2>
             <p className="text-white text-[20px] font-semibold mb-2">{profesion ||"Cargo / profesión"}</p>
-            <p className="text-white text-[20px] font-bold mb-2 underline" onClick={handleClick}>VOLVER</p>
         </div>
     )
 }
