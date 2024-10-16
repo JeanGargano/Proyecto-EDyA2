@@ -5,21 +5,20 @@ import { useNavigate } from 'react-router-dom';
 
 export function Login(){
 
-  const [user, setUser] = useState({
-    correo: "",
-    contraseña:""
-  })
-
   const { login } = useAuth();
+  const {user, setUser} = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
 
   const handleChange = ({ target: { name, value } }) => {
+
+    console.log(name, value )
     setUser({ ...user, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('...........', user)
     setError(null);
     try {
       const result = await login(user.correo, user.contraseña);
@@ -53,6 +52,7 @@ export function Login(){
               <input
                 type="email"
                 id="email"
+                name='correo'
                 className="login-input"
                 placeholder="name@flowbite.com"
                 required
@@ -64,6 +64,7 @@ export function Login(){
               <input
                 type="password"
                 id="password"
+                name='contraseña'
                 className="login-input"
                 required
                 onChange={handleChange}

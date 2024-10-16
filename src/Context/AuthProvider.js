@@ -1,7 +1,8 @@
 //Archivo para contexto entre componentes
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase";
+
 
 export const authContext = createContext()
 
@@ -13,9 +14,10 @@ export const useAuth = ()=>{
 
 export function AuthProvider({children}){
 
-    const user = {
-        login:true,
-    };
+    const [user, setUser] = useState({
+        correo: "",
+        contraseña:""
+      })
 
     const signup = (correo, contraseña) => {
         return createUserWithEmailAndPassword(auth, correo, contraseña);
@@ -27,7 +29,7 @@ export function AuthProvider({children}){
     } 
 
     return(
-        <authContext.Provider value={{signup, login
+        <authContext.Provider value={{signup, login,user, setUser
         }}>
             {children}
         </authContext.Provider>
