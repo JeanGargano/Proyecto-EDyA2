@@ -17,13 +17,7 @@ const InfoUserLeft = ({ nombreCompleto, profesion }) => {
         }
     };
 
-    // Manejador para enviar el formulario
-    // const handleSubmit = (e) => {
-    //    e.preventDefault();
-
-    //    console.log("Imagen seleccionada:", selectedImage);
-    //    alert("Formulario enviado exitosamente");
-    // };
+   
     return (
         <div className="flex flex-1 flex-col items-center justify-center bg-[#2D3748] rounded-r-lg shadow-[0_20px_40px_rgba(252,122,0,0.3)] ">
             <div className="flex flex-col items-center">
@@ -53,7 +47,6 @@ const InfoUserLeft = ({ nombreCompleto, profesion }) => {
             </div>
             <h2 className="text-white text-[20px] font-semibold mb-2">{nombreCompleto || "Nombre completo"}</h2>
             <p className="text-white text-[20px] font-semibold mb-2">{profesion ||"Cargo / profesión"}</p>
-            <p className="text-white text-[20px] font-semibold mb-2">Descripción</p>
         </div>
     )
 }
