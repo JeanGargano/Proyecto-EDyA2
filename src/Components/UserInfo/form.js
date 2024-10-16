@@ -7,13 +7,12 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, onPost }) => {
     const { register, formState: { errors }, handleSubmit } = useForm();
 
     const onSubmit = async (data) => {
-        onActualizarNombre(data.name, data.lastname);
+        onActualizarNombre(data.fullname);
         onActualizarProfesion(data.profession);
 
         try {
             const response = await addUserInfo(data); // Envía los datos al backend
             console.log('Información del usuario creada:', response);
-             // Limpia el formulario después de enviarlo
         } catch (error) {
             console.error('Error al enviar la información:', error);
         }
@@ -31,23 +30,23 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, onPost }) => {
                     <h3 className="font-bold text-white mb-2">Información personal</h3>
                     <input
                         type="text"
-                        name="name"
-                        placeholder="Nombres"
+                        name="doc_id"
+                        placeholder="Numero de documento"
                         className="mb-2 p-2 border w-full px-4 py-2 rounded-full bg-gray-500 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        {...register('name', { required: true, maxLength: 20 })}
+                        {...register('id_user', { required: true, maxLength: 20 })}
                     />
-                    {errors.name?.type === 'required' && <p className="text-red-500 font-bold text-sm">El campo nombre es requerido</p>}
-                    {errors.name?.type === 'maxLength' && <p className="text-red-500 font-bold text-sm">El campo nombre debe tener menos de 20 caracteres</p>}
+                    {errors.doc_id?.type === 'required' && <p className="text-red-500 font-bold text-sm">El campo Numero de Doc es requerido</p>}
+                    {errors.doc_id?.type === 'maxLength' && <p className="text-red-500 font-bold text-sm">El campo Numero de Doc debe tener menos de 20 caracteres</p>}
 
                     <input
                         type="text"
-                        name="lastname"
-                        placeholder="Apellidos"
+                        name="fullname"
+                        placeholder="Nombre Completo"
                         className="mb-2 p-2 border w-full px-4 py-2 rounded-full bg-gray-500 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        {...register('lastname', { required: true, maxLength: 20 })}
+                        {...register('fullname', { required: true, maxLength: 20 })}
                     />
-                    {errors.lastname?.type === 'required' && <p className="text-red-500 font-bold text-sm">El campo Apellidos es requerido</p>}
-                    {errors.lastname?.type === 'maxLength' && <p className="text-red-500 font-bold text-sm">El campo Apellidos debe tener menos de 20 caracteres</p>}
+                    {errors.fullname?.type === 'required' && <p className="text-red-500 font-bold text-sm">El campo Apellidos es requerido</p>}
+                    {errors.fullname?.type === 'maxLength' && <p className="text-red-500 font-bold text-sm">El campo Apellidos debe tener menos de 20 caracteres</p>}
                 </section>
 
                 <section className="border p-4 bg-[#4A5568] border-white border-opacity-40 rounded-md">

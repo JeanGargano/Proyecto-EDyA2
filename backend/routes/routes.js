@@ -11,7 +11,7 @@ import {
     getRepliesByCommentId
 } from '../controllers/postController.js';
 
-import { createInfo, updateInfo } from '../controllers/userInfController.js';
+import { createInfo, updateInfo, getFullnameById } from '../controllers/userInfController.js';
 
 const router = express.Router();
 
@@ -31,6 +31,6 @@ router.get('/:id/comments/:commentId/replies', getRepliesByCommentId); // Obtene
 // Rutas de la información del usuario
 router.post('/user', createInfo);
 router.put('/user', updateInfo);
-
+router.get('/user/:id_user', getFullnameById);
 
 export default router;

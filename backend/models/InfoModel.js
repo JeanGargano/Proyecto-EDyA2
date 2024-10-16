@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 
 const infoSchema = new Schema({
-    name: { type: String, required: true },  
-    lastname: { type: String, required: true },  
+    id_user: { type: String, required: true },  
+    fullname: { type: String, required: true },  
     email: { type: String, required: true }, 
     phoneNumber: { type: String, required: true },  
     location: { type: String, required: true },  

@@ -9,8 +9,8 @@ function UserInfo() {
     const [profesion, setProfesion] = useState('');
 
     // Función para actualizar el nombre completo
-    const actualizarNombreCompleto = (nombre, apellido) => {
-        setNombreCompleto(`${nombre} ${apellido}`);
+    const actualizarNombreCompleto = (nombre) => {
+        setNombreCompleto(`${nombre} `);
     };
     const actualizarProfesion = (profesion) => {
         setProfesion(`${profesion} `);
