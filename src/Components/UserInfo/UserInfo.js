@@ -1,6 +1,6 @@
 import '../../Stylesheet/Login/Login.css';
 import InfoUserLeft from './InfoUserLeft';
-import Form from './Form';
+import Form from './form';
 import { useState } from 'react';
 
 function UserInfo() {

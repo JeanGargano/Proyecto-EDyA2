@@ -9,7 +9,9 @@ import {
     addReply,
     getCommentsByPostId,
     getRepliesByCommentId
-} from '../controllers/PostController.js';
+} from '../controllers/postController.js';
+
+import { createInfo, updateInfo } from '../controllers/userInfController.js';
 
 const router = express.Router();
 
@@ -25,5 +27,10 @@ router.post('/:id/comments', addComment); // Agregar un comentario a un post
 router.get('/:id/comments', getCommentsByPostId); // Obtener todos los comentarios de un post
 router.post('/:id/comments/:commentId/replies', addReply); // Agregar una respuesta a un comentario
 router.get('/:id/comments/:commentId/replies', getRepliesByCommentId); // Obtener respuestas de un comentario
+
+// Rutas de la información del usuario
+router.post('/user', createInfo);
+router.put('/user', updateInfo);
+
 
 export default router;
