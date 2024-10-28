@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../../Stylesheet/Login/Login.css';
-import { useAuth } from '../../Context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context/AuthProvider';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from '../../Firebase.js'; // Asegúrate de que esta ruta sea correcta
 
-export function Login(){
 
+export function Login() {
   const [user, setUser] = useState({
     correo: "",
-    contraseña:""
-  })
-
-  const { login } = useAuth();
+    contrasena: ""
+  });
+  const { user: currentUser } = useAuth(); // Obtener el usuario actual del contexto
   const navigate = useNavigate();
   const [error, setError] = useState(null);
 
@@ -18,29 +19,34 @@ export function Login(){
     setUser({ ...user, [name]: value });
   };
 
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/home'); // Redirige al usuario a la página de inicio si ya está autenticado
+    }
+  }, [currentUser, navigate]); // Dependencias
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    console.log("Datos enviados:", user); // Agregado para depuración
+
     try {
-      const result = await login(user.correo, user.contraseña);
-      navigate("/home");
+      // Utilizar la función de inicio de sesión de Firebase
+      const auth = getAuth(app);
+      const userCredential = await signInWithEmailAndPassword(auth, user.correo, user.contrasena);
+      
+      console.log("Usuario autenticado:", userCredential.user);
+      navigate('/home'); // Navega solo si la autenticación es exitosa
     } catch (error) {
-      switch (error.code) {
-        case "auth/user-not-found":
-          setError("El usuario no existe");
-          break;
-        case "auth/wrong-password":
-          setError("Contraseña incorrecta");
-          break;
-        case "auth/invalid-email":
-          setError("Formato de correo inválido");
-          break;
-        default:
-          setError("Error inesperado: " + error.message);
-      }
+      setError(error.message || 'Error al iniciar sesión');
+      console.error("Error en handleSubmit:", error); // Agregado para depuración
     }
   };
-  
+
+  const redirectRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="login-container">
       {error && <p className="error-message">{error}</p>}
@@ -49,13 +55,14 @@ export function Login(){
           <form className="login-form" onSubmit={handleSubmit}>
             <h2 className="login-title">Login</h2>
             <div>
-              <label  className="login-label">Tu correo</label>
+              <label className="login-label">Tu correo</label>
               <input
                 type="email"
                 id="email"
                 className="login-input"
                 placeholder="name@flowbite.com"
                 required
+                name="correo"
                 onChange={handleChange}
               />
             </div>
@@ -66,9 +73,10 @@ export function Login(){
                 id="password"
                 className="login-input"
                 required
+                name="contrasena"
                 onChange={handleChange}
               />
-            </div> <br></br> <br></br>
+            </div> <br />
             <button type="submit" className="login-button">
               Submit
             </button>
@@ -77,13 +85,11 @@ export function Login(){
         <div className="login-info">
           <h2>¿No tienes una cuenta aún?</h2>
           <p className="login-text">Regístrate y disfruta de nuestros servicios.</p>
-          <button className="register-button">Regístrate</button>
+          <button className="register-button" onClick={redirectRegister}>Regístrate</button>
         </div>
       </div>
     </div>
   );
 }
-
-
 
 export default Login;

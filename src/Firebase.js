@@ -8,12 +8,13 @@ import {getAuth} from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCRJ4kIp9jwMwVi-w7GeOwQjj-M5ZmDExE",
-  authDomain: "proyecto-edya2.firebaseapp.com",
-  projectId: "proyecto-edya2",
-  storageBucket: "proyecto-edya2.appspot.com",
-  messagingSenderId: "308303524322",
-  appId: "1:308303524322:web:d6b78b8fea361706d7c9bb"
+  apiKey: "AIzaSyACbr68AV2amtseVrmUo18c2_xnm37_FwQ",
+  authDomain: "pruebafirebase-233d0.firebaseapp.com",
+  projectId: "pruebafirebase-233d0",
+  storageBucket: "pruebafirebase-233d0.appspot.com",
+  messagingSenderId: "21924744230",
+  appId: "1:21924744230:web:f16460c5bcb57513c46ae7",
+  measurementId: "G-N3P0VFJCHP"
 };
 
 // Initialize Firebase

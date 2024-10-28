@@ -2,30 +2,34 @@
 import React, { useState } from 'react';
 import Reply from './Reply'; // Importar el componente Reply
 
-const Comment = ({ comment, onReply }) => {
+const Comment = ({ comment, onReply, userToken }) => { // Recibe userToken como prop
   const [reply, setReply] = useState('');
   const [showReplyInput, setShowReplyInput] = useState(false);
 
   const handleReply = () => {
     if (reply.trim() === '') return;
-    onReply(reply);
-    setReply(''); // Limpiar el input de respuesta
-    setShowReplyInput(false); // Ocultar el input después de responder
+    onReply(reply, userToken); // Pasa userToken a la función onReply
+    setReply('');
+    setShowReplyInput(false);
   };
+
+  console.log(comment);
+
+  const URI_PICTURE_PROFILE = comment.userProfilePath ? `http://localhost:8000/${comment.userProfilePath}` : '';
 
   return (
     <div className="bg-[#182637] p-3 rounded-lg mb-4">
       <div className="flex items-start space-x-4">
-        <img
-          src='/media/picture/images.png'
-          alt="Usuario comentario"
-          className="w-8 h-8 rounded-full"
-        />
+      <img
+        src={URI_PICTURE_PROFILE || '/media/picture/images.png'}
+        alt="Usuario comentario"
+        className="w-8 h-8 rounded-full"
+      />
         <div>
-          <h3 className="text-orange-400 font-semibold">Usuario comentario</h3>
+          <h3 className="text-orange-400 font-semibold">{comment.authorName}</h3> {/* Mostrar nombre del usuario */}
           <p className="text-gray-300">{comment.commentText}</p>
           <div className="flex items-center text-gray-400 text-sm mt-2 space-x-4">
-            <span>2 min</span>
+            <span>{new Date(comment.commentedAt).toLocaleString()}</span> {/* Mostrar fecha */}
             <span>Me gusta</span>
             <span
               className="cursor-pointer"
@@ -56,7 +60,7 @@ const Comment = ({ comment, onReply }) => {
           {comment.replies && comment.replies.length > 0 && (
             <div className="mt-4">
               {comment.replies.map((replyItem) => (
-                <Reply key={replyItem._id} replyItem={replyItem} /> 
+                <Reply key={replyItem._id} replyItem={replyItem} userToken={userToken} /> 
               ))}
             </div>
           )}

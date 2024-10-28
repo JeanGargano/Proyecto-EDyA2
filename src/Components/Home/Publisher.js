@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../../Stylesheet/Home/LeftNavbar.css';
 
-const Publisher = ({ onPublish }) => {
+const Publisher = ({ onPublish, URI_PICTURE_PROFILE_PUBLISHER }) => {
   const [content, setContent] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null); // Ref para el input de archivo
 
   const handleClear = () => {
-    setContent(''); // Limpiamos el campo de texto cuando se hace clic en "Vaciar"
+    setContent('');
+    setSelectedFile(null);
   };
 
   const handlePublish = () => {
     if (content.trim() !== "") {
-      onPublish(content); // Llama a onPublish con el contenido del post
-      setContent(''); // Limpiar el campo después de publicar
+      onPublish(content, selectedFile);
+      setContent('');
+      setSelectedFile(null);
     }
   };
-  
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleFileUploadClick = () => {
+    fileInputRef.current.click(); // Dispara el clic en el input de archivo
+  };
+
   return (
     <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10">
       <div className="flex items-center space-x-4 mb-4">
         <img
-          src="/media/picture/images.png"
+          src={URI_PICTURE_PROFILE_PUBLISHER || '/media/picture/images.png'}
           alt="User Avatar"
           className="rounded-full w-10 h-10 object-cover"
         />
@@ -31,9 +43,22 @@ const Publisher = ({ onPublish }) => {
           className="w-full px-4 py-2 rounded-full bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <hr className="border-gray-600 mb-4" />
+      {selectedFile && (
+        <div className="mt-4 flex justify-center text-gray-200 text-center">
+          Archivo seleccionado: {selectedFile.name}
+          <br />
+          <br />
+        </div>
+      )}
       <div className="flex justify-around">
-        <button className="flex items-center space-x-2 text-orange-500 hover:text-orange-700">
+        {/* Botón de foto */}
+        <button
+          type="button"
+          onClick={handleFileUploadClick}
+          className="flex items-center space-x-2 text-orange-500 hover:text-orange-700"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -50,6 +75,14 @@ const Publisher = ({ onPublish }) => {
           </svg>
           <span>Foto</span>
         </button>
+        <input
+          type="file"
+          ref={fileInputRef} // Referencia del input
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
+
+        {/* Botón de limpiar */}
         <button
           onClick={handleClear}
           className="flex items-center space-x-2 text-orange-500 hover:text-orange-700"
@@ -70,6 +103,8 @@ const Publisher = ({ onPublish }) => {
           </svg>
           <span>Vaciar</span>
         </button>
+
+        {/* Botón de publicar */}
         <button
           onClick={handlePublish}
           className="flex items-center space-x-2 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800"

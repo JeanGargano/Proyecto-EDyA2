@@ -1,54 +1,37 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import ProfileImageModal from '../ProfileImageModal'; // Asegúrate de la ruta correcta
 
+const InfoUserLeft = ({ nombreCompleto, profesion, imagenPerfil }) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const URI = `http://localhost:8000/${imagenPerfil}`;
 
-
-const InfoUserLeft = ({ nombreCompleto, profesion }) => {
-    const [preview, setPreview] = useState(null);
-
-    // Manejador para seleccionar la imagen
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
+    const toggleModal = () => {
+        setModalOpen(!modalOpen);
     };
 
-   
     return (
-        <div className="flex flex-1 flex-col items-center justify-center bg-[#2D3748] rounded-r-lg shadow-[0_20px_40px_rgba(252,122,0,0.3)] ">
-            <div className="flex flex-col items-center">
-                <h1 className="text-white text-[24px] font-semibold mb-2 text-center">MI PERFIL</h1>
-                <label className="cursor-pointer">
-                    {preview ? (
-                        <img
-                            src={preview}
-                            alt="Vista previa"
-                            className="rounded-full w-20 h-20 object-cover border-white border-[1px] hover:border-blue-500"
-                        />
+        <>
+            <div className="w-[40%] bg-[#1F2937] p-8 rounded-lg flex flex-col items-center">
+                <h2 className="text-white text-2xl mb-4">MI PERFIL</h2>
+                <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden cursor-pointer" onClick={toggleModal}>
+                    {imagenPerfil ? (
+                        <img src={URI} alt="Foto de perfil" className="object-cover w-full h-full" />
                     ) : (
-                        <img
-                            className="rounded-full w-20 h-20 object-cover border-white border-[1px] hover:border-blue-500"
-                            src="https://cdn-icons-png.flaticon.com/512/6378/6378141.png"
-                            alt="Nada"
-                        />
+                        <span className="text-gray-500">Nada</span>
                     )}
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
-                        className="hidden"
-                    />
-                </label>
+                </div>
+                <h3 className="text-white text-xl mt-4">{nombreCompleto || "Nombre completo"}</h3>
+                <p className="text-gray-400">{profesion || "Cargo / profesión"}</p>
             </div>
-            <h2 className="text-white text-[20px] font-semibold mb-2">{nombreCompleto || "Nombre completo"}</h2>
-            <p className="text-white text-[20px] font-semibold mb-2">{profesion ||"Cargo / profesión"}</p>
-        </div>
-    )
-}
 
-export default InfoUserLeft;
+            {/* Modal para imagen de perfil */}
+            <ProfileImageModal 
+                isOpen={modalOpen} 
+                onClose={toggleModal} 
+                imageUrl={URI} 
+            />
+        </>
+    );
+};
+
+export default InfoUserLeft; 

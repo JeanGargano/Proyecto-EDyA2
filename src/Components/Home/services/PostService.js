@@ -1,66 +1,37 @@
-// src/services/postService.js
+import axios from 'axios';
 
-import { addComment, addReply } from './CommentService'; // Importar las funciones de servicio
+const URI = 'http://localhost:8000/posts/';
 
-// Función para manejar agregar un comentario
-export const handleAddComment = async (postId, comment, setComments, setComment) => {
-  if (comment.trim() === '') return;
-
-  const tempId = Date.now(); // ID temporal para el nuevo comentario
-  const newComment = {
-    _id: tempId,
-    commentText: comment,
-    replies: [],
-  };
-
-  setComments(prev => [...prev, newComment]); // Añadir el comentario temporal
-  setComment(''); // Limpiar el campo de comentario
+export const handleAddComment = async (postId, commentText, setComments, setComment, userToken) => {
+  const newComment = { commentText };
 
   try {
-    const savedComment = await addComment(postId, comment);
-    setComments(prevComments =>
-      prevComments.map(commentItem =>
-        commentItem._id === tempId ? { ...savedComment, replies: [] } : commentItem
-      )
-    );
+    const response = await axios.post(`${URI}${postId}/comments`, newComment, {
+      headers: {
+        Authorization: `Bearer ${userToken}`, // Agregar userToken al header
+      },
+    });
+    setComments((prevComments) => [...prevComments, response.data]);
+    setComment('');
   } catch (error) {
-    console.error('Error al agregar el comentario:', error);
+    console.error('Error al agregar comentario:', error);
   }
 };
 
-// Función para manejar agregar una respuesta
-export const handleAddReply = async (postId, commentId, replyText, setComments) => {
-  if (replyText.trim() === '') return;
-
-  const tempReplyId = Date.now();
-  const newReply = {
-    _id: tempReplyId,
-    replyText,
-  };
-
-  setComments(prevComments =>
-    prevComments.map(commentItem =>
-      commentItem._id === commentId
-        ? { ...commentItem, replies: [...commentItem.replies, newReply] }
-        : commentItem
-    )
-  );
+export const handleAddReply = async (postId, commentId, replyText, setComments, userToken, fetchPostsComments) => {
+  const newReply = { replyText };
 
   try {
-    const savedReply = await addReply(postId, commentId, replyText);
-    setComments(prevComments =>
-      prevComments.map(commentItem =>
-        commentItem._id === commentId
-          ? {
-              ...commentItem,
-              replies: commentItem.replies.map(replyItem =>
-                replyItem._id === tempReplyId ? savedReply : replyItem
-              ),
-            }
-          : commentItem
-      )
-    );
+    const response = await axios.post(`${URI}${postId}/comments/${commentId}/replies`, newReply, {
+      headers: {
+        Authorization: `Bearer ${userToken}`, // Agregar userToken al header
+      },
+    });
+    setComments((prevComments) => prevComments.map((comment) =>
+      comment._id === commentId ? { ...comment, replies: [...comment.replies, response.data] } : comment
+    ));
+    fetchPostsComments();
   } catch (error) {
-    console.error('Error al agregar la respuesta:', error);
+    console.error('Error al agregar respuesta:', error);
   }
 };

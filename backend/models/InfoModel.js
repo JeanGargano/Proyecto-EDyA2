@@ -1,14 +1,19 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
 
+const InfoSchema = new mongoose.Schema({
+  firebaseUid: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  fullname: String,
+  email: String,
+  phone: String,
+  location: String,
+  profession: String,
+  userProfilePath: String,
+});
 
-const infoSchema = new Schema({
-    id_user: { type: String, required: true },  
-    fullname: { type: String, required: true },  
-    email: { type: String, required: true }, 
-    phoneNumber: { type: String, required: true },  
-    location: { type: String, required: true },  
-    profession: { type: String, required: true },  
-},{ collection: 'users-info' });
+const InfoModel = mongoose.model('UserInfo', InfoSchema);
 
-export default mongoose.model('InfoModel', infoSchema);
+export default InfoModel;

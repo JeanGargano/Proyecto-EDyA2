@@ -7,7 +7,7 @@ const FriendItem = ({ name, imgSrc }) => (
   </div>
 );
 
-const RightSidebar = () => {
+const ListFriend = () => {
   const friends = [
     { name: 'Friend 1', imgSrc: '/media/picture/images.png' },
     { name: 'Friend 2', imgSrc: '/media/picture/images.png' },
@@ -30,4 +30,4 @@ const RightSidebar = () => {
   );
 };
 
-export default RightSidebar;
+export default ListFriend;

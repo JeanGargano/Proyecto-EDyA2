@@ -1,17 +1,54 @@
 import InfoModel from "../models/InfoModel.js";
+import { getRelativeFilePath } from "../Middleware/multer.js";
 import mongoose from "mongoose";
 
+// Controlador para crear la información del usuario con la foto de perfil
 export const createInfo = async (req, res) => {
     try {
-        const newInfo = await InfoModel.create(req.body);
-        res.status(201).json({
-            message: "Información cargada correctamente!",
-            post: newInfo
+        const firebaseUid = req.user?.id;
+        if (!firebaseUid) {
+            return res.status(400).json({ message: 'UID de Firebase no encontrado.' });
+        }
+
+        const { fullname, profession, email, phone, location } = req.body;
+        const profileImage = req.file ? getRelativeFilePath(req.file.path) : null; // Obtener la ruta relativa
+
+        // Buscar si ya existe un registro con este firebaseUid
+        const existingInfo = await InfoModel.findOne({ firebaseUid });
+
+        if (existingInfo) {
+            // Actualizar la información existente
+            existingInfo.fullname = fullname;
+            existingInfo.profession = profession;
+            existingInfo.email = email;
+            existingInfo.phone = phone;
+            existingInfo.location = location;
+            if (profileImage) {
+                existingInfo.userProfilePath = profileImage; // Actualizar imagen si hay una nueva
+            }
+            await existingInfo.save();
+            return res.status(200).json({ message: 'Información actualizada exitosamente.', updatedInfo: existingInfo });
+        }
+
+        // Si no existe, crear nueva información
+        const newInfo = new InfoModel({ 
+            firebaseUid, 
+            fullname, 
+            profession, 
+            email, 
+            phone, 
+            location,
+            userProfilePath: profileImage, // Guardar la ruta de la imagen en la base de datos
         });
+
+        await newInfo.save();
+        res.status(201).json({ message: 'Información creada exitosamente.', newInfo });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Error al crear o actualizar la información:', error);
+        res.status(500).json({ message: 'Error al crear o actualizar la información.', error: error.message });
     }
 };
+
 
 
 export const updateInfo = async (req, res) => {
@@ -41,3 +78,34 @@ export const getFullnameById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Controlador para obtener la información del usuario
+
+
+export const getInfo = async (req, res) => {
+    try {
+        const userId = req.user.id; 
+    
+        const user = await InfoModel.findOne({ firebaseUid: userId }); // Cambiado a InfoModel
+        
+        if (!user) {
+            
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+    
+        res.status(200).json({
+            fullname: user.fullname,
+            profession: user.profession,
+            email: user.email,
+            phone: user.phone,
+            location: user.location,
+            profileImage: user.userProfilePath // Asegúrate de usar el campo correcto para la imagen
+        });
+    } catch (error) {
+        console.error('Error en el servidor:', error);
+        res.status(500).json({ message: 'Error del servidor', error });
+    }
+};
+
+
+

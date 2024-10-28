@@ -1,22 +1,20 @@
+import { useState } from 'react';  // Importar useState
+import { useAuth } from '../../Context/AuthProvider';  // Importar useAuth (de tu contexto de autenticación)
+import { useNavigate } from 'react-router-dom';  // Importar useNavigate (de react-router-dom)
 import '../../Stylesheet/Register/Register.css';
-import { useState } from 'react';
-import { useAuth } from '../../Context/AuthProvider';
-import { useNavigate } from 'react-router-dom';
 
 export function Register() {
-
   const [user, setUser] = useState({
     nombre: "",
     correo: "",
-    contraseña: "",
+    contrasena: "",  // Cambia a "contrasena"
   });
 
   const { signup } = useAuth();
-  
   const navigate = useNavigate();
-
   const [error, setError] = useState(null);
 
+  // Función para manejar cambios en los campos del formulario
   const handleChange = ({ target: { name, value } }) => {
     setUser({ ...user, [name]: value });
   };
@@ -25,25 +23,45 @@ export function Register() {
     e.preventDefault();
     setError(null);
     try {
-      const result = await signup(user.correo, user.contraseña);
-      navigate("/home");
-    } catch (error) {
-      switch (error.code) {
-        case "auth/user-not-found":
-          setError("El usuario no existe");
-          break;
-        case "auth/wrong-password":
-          setError("Contraseña incorrecta");
-          break;
-        case "auth/invalid-email":
-          setError("Formato de correo inválido");
-          break;
-        default:
-          setError("Error inesperado: " + error.message);
+      // Registro en Firebase
+      const result = await signup(user.correo, user.contrasena); // Asegúrate de que signup esté bien implementado
+
+      // UID de Firebase
+      const firebaseUid = result.user.uid;
+
+      // Enviar datos al backend para registrar en MongoDB
+      const response = await fetch('http://localhost:8000/posts/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: user.nombre,
+          correo: user.correo,
+          contrasena: user.contrasena,  // Asegúrate de que coincida con el backend
+          firebaseUid,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
       }
+
+      const data = await response.json();
+
+      // Guardar el token en el localStorage
+      localStorage.setItem('token', data.token);
+
+      navigate('/info');
+    } catch (error) {
+      setError(error.message || 'Error en el registro');
     }
   };
-  
+
+  const redirect_login = () => {
+    navigate('/');
+  };
 
   return (
     <div>
@@ -78,18 +96,9 @@ export function Register() {
               <div>
                 <label className="label">Contraseña</label>
                 <input
-                  name="contraseña"
+                  name="contrasena"  // Cambia a "contrasena"
                   type="password"
                   id="password"
-                  className="input"
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="label">Confirmar contraseña</label>
-                <input
-                  type="password"
-                  id="confirm-password"
                   className="input"
                   onChange={handleChange}
                 />
@@ -101,13 +110,13 @@ export function Register() {
             <div className="info">
               <h2>¿Ya tienes una cuenta?</h2>
               <p className="text">Inicia sesión para continuar.</p>
-              <button className="info-button">Iniciar sesión</button>
+              <button className="info-button" onClick={redirect_login}>Iniciar sesión</button>
             </div>
           </div>
         </div>
       </form>
     </div>
   );
-};
+}
 
 export default Register;

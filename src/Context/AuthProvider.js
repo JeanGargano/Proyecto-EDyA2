@@ -1,37 +1,46 @@
-//Archivo para contexto entre componentes
-import { createContext, useContext } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../Firebase";
+// Context/AuthProvider.js
+import { createContext, useState, useEffect, useContext } from "react";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth";
+import { app } from '../Firebase';
 
-export const authContext = createContext()
+export const AuthContext = createContext();
 
-export const useAuth = ()=>{
-    const context = useContext(authContext)
-    if (!context) throw new Error("There is no AuthProvider")
-    return context
-}
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
 
-export function AuthProvider({children}){
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const user = {
-        login:true,
+    // Mueve la instancia de auth fuera del componente
+    const auth = getAuth(app);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []); // Dependencias vacías para evitar recreación de `auth`
+
+    const signup = async (email, password) => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            return userCredential;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     };
 
-    const signup = (correo, contraseña) => {
-        return createUserWithEmailAndPassword(auth, correo, contraseña);
-      };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-    const login = (correo, contraseña) =>{
-
-        return signInWithEmailAndPassword(auth, correo, contraseña)
-    } 
-
-    return(
-        <authContext.Provider value={{signup, login
-        }}>
+    return (
+        <AuthContext.Provider value={{ user, signup }}>
             {children}
-        </authContext.Provider>
-    )
-
-}
-
+        </AuthContext.Provider>
+    );
+};

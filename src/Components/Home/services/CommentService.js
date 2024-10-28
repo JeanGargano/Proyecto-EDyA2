@@ -1,34 +1,29 @@
-// src/services/commentService.js
+import axios from 'axios'; // Asegúrate de tener axios importado
+const URI = 'http://localhost:8000/posts/'; // Reemplaza con tu URI correcta
 
-import axios from 'axios';
-
-const URI = "http://localhost:8000/posts/";
-
-export const fetchComments = async (postId) => {
+export const fetchComments = async (postId, userToken) => {
   try {
-    const response = await axios.get(`${URI}${postId}/comments`);
-    if (response.status === 200) {
-      return response.data.map(comment => ({
-        ...comment,
-        _id: String(comment._id),
-        replies: comment.replies.map(reply => ({
-          ...reply,
-          _id: String(reply._id),
-        })),
-      }));
-    } else {
-      console.error('Error al cargar los comentarios');
-      return [];
-    }
+    const response = await fetch(`${URI}${postId}/comments`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    const data = await response.json();
+    return Array.isArray(data) ? data : []; // Siempre retorna un array
   } catch (error) {
-    console.error('Error de red al cargar comentarios:', error);
-    return [];
+    console.error('Error fetching comments:', error);
+    return []; // Retorna un array vacío en caso de error
   }
 };
 
-export const addComment = async (postId, commentText) => {
+
+export const addComment = async (postId, commentText, userToken) => {
   try {
-    const response = await axios.post(`${URI}${postId}/comments`, { commentText });
+    const response = await axios.post(
+      `${URI}${postId}/comments`, 
+      { commentText }, 
+      { headers: { Authorization: `Bearer ${userToken}` } } // Agregar token en los headers
+    );
     if (response.status === 200) {
       return response.data;
     } else {
@@ -40,9 +35,13 @@ export const addComment = async (postId, commentText) => {
   }
 };
 
-export const addReply = async (postId, commentId, replyText) => {
+export const addReply = async (postId, commentId, replyText, userToken) => {
   try {
-    const response = await axios.post(`${URI}${postId}/comments/${commentId}/replies`, { replyText });
+    const response = await axios.post(
+      `${URI}${postId}/comments/${commentId}/replies`, 
+      { replyText }, 
+      { headers: { Authorization: `Bearer ${userToken}` } } // Agregar token en los headers
+    );
     if (response.status === 200) {
       return response.data;
     } else {

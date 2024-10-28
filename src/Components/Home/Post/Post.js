@@ -1,23 +1,28 @@
-// src/components/Post.js
-
 import React, { useState, useEffect } from 'react';
-import { fetchComments } from '../services/CommentService';
-import { handleAddComment, handleAddReply } from '../services/PostService'; // Importar las funciones
+import { fetchComments } from '../services/CommentService'; // Ahora importamos fetchComments
+import { handleAddComment, handleAddReply } from '../services/PostService';
 import Comment from './Comment';
+import { formatDistanceToNow } from 'date-fns'; // Importa formatDistanceToNow
 
-const Post = ({ id, content, handleDeletePostClick }) => {
+
+const Post = ({ id, content, handleDeletePostClick, userToken, authorName, createdAt , userProfilePath, commentsData, fetchPosts, postPicturePath }) => { 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
+  const URI_PICTURE_PROFILE = userProfilePath ? `http://localhost:8000/${userProfilePath}` : '';
+  const commentsDataUpload = commentsData;
+  const URI_FILE_POST = postPicturePath ? `http://localhost:8000/${postPicturePath}` : '';
 
-  // Cargar los comentarios al montar el componente
-  useEffect(() => {
-    const loadComments = async () => {
-      const commentsData = await fetchComments(id);
-      setComments(commentsData);
-    };
-    loadComments();
-  }, [id]);
+  const handleCommentSubmit = async () => {
+    if (comment.trim() !== '') {
+      await handleAddComment(id, comment, setComments, setComment, userToken);
+      fetchPosts();
+    }
+  };
+
+  const fetchPostsComments = () => {fetchPosts();}
+
+  const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true }); // Usa `createdAt`
 
   return (
     <div className="bg-[#182637] text-white p-4 mt-8 rounded-lg w-full shadow-lg max-w-lg mx-auto relative">
@@ -38,18 +43,19 @@ const Post = ({ id, content, handleDeletePostClick }) => {
       </div>
 
       <div className="flex items-center mb-4">
-        <img src='/media/picture/images.png' alt="Usuario" className="w-12 h-12 rounded-full mr-4" />
+      <img src={URI_PICTURE_PROFILE || '/media/picture/images.png'} alt="Usuario" className="w-12 h-12 rounded-full mr-4" />
         <div>
-          <h2 className="text-orange-400 font-semibold">Usuario plataforma</h2>
-          <span className="text-gray-400 text-sm">5h <i className="fas fa-globe-americas"></i></span>
+          <h2 className="text-orange-400 font-semibold">{authorName}</h2> {/* Mostrar nombre del usuario */}
+          <span className="text-gray-400 text-sm">{timeAgo} <i className="fas fa-globe-americas"></i></span> {/* Mostrar tiempo transcurrido */}
         </div>
       </div>
 
       <p className="mb-4">{content}</p>
-
+      {URI_FILE_POST && <img src={URI_FILE_POST} alt="Publicación" className="w-full h-64 object-cover mb-4 rounded-lg" />}
+      <hr className="border-t border-gray-600 mb-4" />
       <div className="text-gray-400 flex items-center justify-between mb-4">
         <span>183,982 me gustas</span>
-        <span>{comments.length} comentarios</span>
+        <span>{commentsData.length} comentarios</span>
       </div>
       <hr className="border-t border-gray-600 mb-4" />
 
@@ -62,7 +68,7 @@ const Post = ({ id, content, handleDeletePostClick }) => {
           className="w-full px-4 py-2 rounded-full bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          onClick={() => handleAddComment(id, comment, setComments, setComment)}
+          onClick={handleCommentSubmit}
           className="bg-orange-700 text-white px-4 py-2 rounded-lg mt-2 hover:bg-orange-800"
         >
           Comentar
@@ -70,9 +76,16 @@ const Post = ({ id, content, handleDeletePostClick }) => {
       </div>
 
       {/* Mostrar los comentarios */}
-      {comments.map((comment) => (
-        <Comment key={comment._id} comment={comment} onReply={(replyText) => handleAddReply(id, comment._id, replyText, setComments)} />
-      ))}
+      {commentsDataUpload.map((comment) => (
+        <Comment 
+          key={comment._id} 
+          comment={comment} 
+          userToken={userToken}
+          userProfilePath={comment.userProfilePath}
+          onReply={(replyText) => handleAddReply(id, comment._id, replyText, setComments, userToken, fetchPostsComments)} 
+        />
+      )
+      )}
     </div>
   );
 };

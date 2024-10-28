@@ -5,8 +5,13 @@
 /.pnp
 .pnp.js
 
+# /uploads
+/backend/uploads
 # testing
 /coverage
+
+# firebase keys
+firebase-service-account.json
 
 # production
 /build
