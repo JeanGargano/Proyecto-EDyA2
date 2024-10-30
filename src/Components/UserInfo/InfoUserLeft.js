@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import ProfileImageModal from '../ProfileImageModal'; // Asegúrate de la ruta correcta
-
+import {useNavigate} from 'react-router-dom';
 const InfoUserLeft = ({ nombreCompleto, profesion, imagenPerfil }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const URI = `http://localhost:8000/${imagenPerfil}`;
+    const navigate = useNavigate();
 
     const toggleModal = () => {
         setModalOpen(!modalOpen);
     };
+
+    const handleClick = () => {
+        navigate('/home');
+      }
 
     return (
         <>
@@ -22,6 +27,13 @@ const InfoUserLeft = ({ nombreCompleto, profesion, imagenPerfil }) => {
                 </div>
                 <h3 className="text-white text-xl mt-4">{nombreCompleto || "Nombre completo"}</h3>
                 <p className="text-gray-400">{profesion || "Cargo / profesión"}</p>
+                <div className="mt-4" >
+                    <button 
+                        onClick={handleClick}
+                         
+                        className="bg-[#ff914d] text-white font-bold py-2 px-4 rounded cursor-pointer w-full"
+                    >Volver </button>
+                </div>
             </div>
 
             {/* Modal para imagen de perfil */}
@@ -30,6 +42,7 @@ const InfoUserLeft = ({ nombreCompleto, profesion, imagenPerfil }) => {
                 onClose={toggleModal} 
                 imageUrl={URI} 
             />
+
         </>
     );
 };

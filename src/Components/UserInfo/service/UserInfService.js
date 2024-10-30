@@ -63,3 +63,24 @@ export const fetchUserInfo = async () => {
         return null;
     }
 };
+export const getBasicUserInfo = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+        throw new Error('No hay un usuario autenticado.');
+    }
+
+    try {
+        const token = await user.getIdToken();
+        const response = await axios.get(`${API_URL}/basic`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener la información básica de usuarios:', error);
+        throw error;
+    }
+};

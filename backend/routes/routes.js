@@ -12,7 +12,7 @@ import {
     getPostsController
 } from '../controllers/postController.js';
 
-import { createInfo, updateInfo, getInfo } from '../controllers/userInfController.js';
+import { createInfo, updateInfo, getInfo, getBasicUserInfo } from '../controllers/userInfController.js';
 
 import { verifyToken } from '../Middleware/authMiddleware.js';
 import upload from '../Middleware/multer.js';
@@ -40,5 +40,6 @@ router.get('/userinfo/get', verifyToken, getInfo);  // Obtener la información d
 // Rutas user
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.get('/userinfo/basic', verifyToken, getBasicUserInfo);
 
 export default router;

@@ -108,4 +108,17 @@ export const getInfo = async (req, res) => {
 };
 
 
+export const getBasicUserInfo = async (req, res) => {
+    try {
+        const users = await InfoModel.find({}, 'fullname profession firebaseUid userProfilePath');
+        
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: "No se encontró información de usuarios." });
+        }
 
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error al obtener información básica de los usuarios:", error);
+        res.status(500).json({ message: "Error al obtener información de los usuarios." });
+    }
+};

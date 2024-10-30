@@ -15,6 +15,7 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, userInfo }) => {
     });
     const navigate = useNavigate();
 
+
     // Establecer valores iniciales para los campos
     React.useEffect(() => {
         setValue("fullname", userInfo?.fullname || "");
@@ -123,6 +124,7 @@ const Form = ({ onActualizarNombre, onActualizarProfesion, userInfo }) => {
                         className="bg-[#ff914d] text-white font-bold py-2 px-4 rounded cursor-pointer w-full"
                     />
                 </div>
+
             </form>
         </div>
     );

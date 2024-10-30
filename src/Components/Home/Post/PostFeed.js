@@ -4,7 +4,7 @@ import axios from 'axios';
 import Post from './Post';
 import Publisher from '../Publisher';
 
-const PostFeed = ({ URI_PICTURE_PROFILE }) => {
+const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
   const [posts, setPosts] = useState([]);
   const [userToken, setUserToken] = useState(null);
   const GET_POSTS_URI = 'http://localhost:8000/posts';
@@ -20,6 +20,8 @@ const PostFeed = ({ URI_PICTURE_PROFILE }) => {
     return () => unsubscribe();
   }, []);
 
+  console.log(depends)
+
   const fetchPosts = async () => {
     try {
       const response = await axios.get(GET_POSTS_URI, {
@@ -33,11 +35,43 @@ const PostFeed = ({ URI_PICTURE_PROFILE }) => {
     }
   };
 
+  const fetchMyPosts = async () => {
+    try {
+      const response = await axios.get(`${GET_POSTS_URI}/${getAuth().currentUser.uid}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error('Error al obtener las publicaciones:', error);
+    }
+  };
+  const fetchUserPosts = async () => {
+    if (!firebaseUid) return; // No hacer fetch si no hay firebaseUid
+    try {
+      const response = await axios.get(`${GET_POSTS_URI}/${firebaseUid}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error('Error al obtener las publicaciones del usuario específico:', error);
+    }
+  };
+
   useEffect(() => {
     if (userToken) {
-      fetchPosts();
+      if(depends) {
+        fetchMyPosts();
+      }else if (firebaseUid) {
+        fetchUserPosts();
+      } else {
+        fetchPosts();
+      }
     }
-  }, [userToken]);
+  }, [userToken, depends]);
 
   const handlePublish = async (content, selectedFile) => {
     if (!userToken) return console.error('Error: Usuario no autenticado');
@@ -89,6 +123,7 @@ const PostFeed = ({ URI_PICTURE_PROFILE }) => {
     }
   };
   
+  console.log(URI_PICTURE_PROFILE)
  
   return (
   <div>

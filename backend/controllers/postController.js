@@ -21,11 +21,48 @@ export const getAllPosts = async (req, res) => {
 export const getAllPostById = async (req, res) => {
     try {
         const id = req.params.id;
-        const post = await PostModel.find({user: id});
-        if (!post) return res.status(404).json({ message: "Post no encontrado" });
-        res.status(200).json(post);
+
+        // Obtener todos los posts del usuario especificado
+        const posts = await PostModel.find({ user: id }).sort({ createdAt: -1 }).lean();
+        if (!posts.length) {
+            return res.status(404).json({ message: "No se encontraron posts para el usuario" });
+        }
+
+        // Obtener los firebaseUids de los usuarios en los posts, comentarios y respuestas
+        const userIds = new Set();
+        posts.forEach(post => {
+            userIds.add(post.user); // autor del post
+            post.comments.forEach(comment => {
+                userIds.add(comment.user); // autor del comentario
+                comment.replies.forEach(reply => {
+                    userIds.add(reply.user); // autor de la respuesta
+                });
+            });
+        });
+
+        // Convertir el Set a un array y buscar la información de los usuarios
+        const userInfoArray = await InfoModel.find({ firebaseUid: { $in: Array.from(userIds) } });
+        const userInfoMap = userInfoArray.reduce((acc, userInfo) => {
+            acc[userInfo.firebaseUid] = userInfo.userProfilePath;
+            return acc;
+        }, {});
+
+        // Asignar las fotos de perfil a los posts, comentarios y respuestas
+        for (const post of posts) {
+            post.userProfilePath = userInfoMap[post.user] || null; // foto de perfil del autor del post
+
+            for (const comment of post.comments) {
+                comment.userProfilePath = userInfoMap[comment.user] || null; // foto de perfil del autor del comentario
+
+                for (const reply of comment.replies) {
+                    reply.userProfilePath = userInfoMap[reply.user] || null; // foto de perfil del autor de la respuesta
+                }
+            }
+        }
+
+        res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "No se pudo obtener la información de los posts." });
     }
 };
 
