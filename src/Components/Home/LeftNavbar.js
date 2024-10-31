@@ -3,8 +3,10 @@ import '../../Stylesheet/Home/LeftNavbar.css';
 import { useNavigate } from "react-router-dom";
 
 const SidebarItem = ({ icon, label, onClick }) => (
-  <button onClick={onClick} className="px-6 py-2 border rounded-r-lg border-orange-600 text-black font-bold transform hover:-translate-y-1 transition duration-400 hover:underline decoration-white hover:bg-orange-800">
-    {icon}
+  <button
+    onClick={onClick}
+    className="w-full px-6 py-2 border rounded-lg border-orange-600 text-black font-bold transform hover:-translate-y-1 transition duration-400 hover:underline hover:bg-orange-800 flex items-center justify-start"
+  >{icon}
     <span className="text-white">{label}</span>
   </button>
 );
@@ -28,7 +30,7 @@ const LeftSidebar = ({ nombreCompleto, URI, setActiveComponent }) => {
         />
         <SidebarItem
           icon={<span className="text-orange-400">✎</span>}
-          label="Sobre nosotros"
+          label="Sobre el Proyecto"
           onClick={() => setActiveComponent('About')} 
         />
         <SidebarItem
