@@ -8,6 +8,7 @@ const UserList = () => {
     const [selectedUserUid, setSelectedUserUid] = useState(null); // Estado para manejar el uid del usuario seleccionado
     const [imagenPerfil, setImagenPerfil] = useState('');
     const URI_PICTURE_PROFILE =  `http://localhost:8000/${imagenPerfil}` ;
+    const [noPosts, setNoPosts] = useState(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -40,18 +41,30 @@ const UserList = () => {
 
     // Si hay un usuario seleccionado, muestra el PostFeed
     if (selectedUserUid) {
+        // Suponiendo que `posts` es el estado que maneja las publicaciones en PostFeed
         return (
-            <div className="flex flex-col items-center"> {/* Asegúrate de que el contenedor sea un flex y esté centrado */}
-            <PostFeed URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} firebaseUid={selectedUserUid} />
-            <button 
-                className="mt-4 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800" // Elimina el ancho fijo
-                onClick={handleGoBack} // Maneja el clic para regresar
-            >
-                Regresar a la lista de usuarios
-            </button>
-        </div>
+            <div className="flex flex-col items-center pb-6">
+                <PostFeed 
+                    URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} 
+                    firebaseUid={selectedUserUid} 
+                    onNoPosts={() => setNoPosts(true)} // Callback para manejar la ausencia de publicaciones
+                />
+                {noPosts && ( // Muestra el mensaje solo si no hay publicaciones
+                    <div className="mt-4 text-center text-gray-600">
+                        <h2 className="text-lg font-bold">No hay publicaciones disponibles.</h2>
+                        <p>Este usuario aún no ha realizado ninguna publicación.</p>
+                    </div>
+                )}
+                <button 
+                    className="mt-4 bg-orange-700 text-white px-4 py-2 rounded-lg hover:bg-orange-800" 
+                    onClick={handleGoBack} 
+                >
+                    Regresar a la lista de usuarios
+                </button>
+            </div>
         );
     }
+    
 
     return (
         <div className="flex flex-col  p-6 rounded-lg max-w-2xl mx-auto mt-8 space-y-4">
