@@ -12,7 +12,6 @@ const Post = ({ id, content, handleDeletePostClick, userToken, authorName, creat
   const URI_PICTURE_PROFILE = userProfilePath ? `http://localhost:8000/${userProfilePath}` : '';
   const commentsDataUpload = commentsData;
   const URI_FILE_POST = postPicturePath ? `http://localhost:8000/${postPicturePath}` : '';
-
   const handleCommentSubmit = async () => {
     if (comment.trim() !== '') {
       await handleAddComment(id, comment, setComments, setComment, userToken);
@@ -51,7 +50,7 @@ const Post = ({ id, content, handleDeletePostClick, userToken, authorName, creat
       </div>
 
       <p className="mb-4">{content}</p>
-      {URI_FILE_POST && <img src={URI_FILE_POST} alt="Publicación" className="w-full h-64 object-cover mb-4 rounded-lg" />}
+      {postPicturePath && <img src={postPicturePath} alt="Publicación" className="w-full h-64 object-cover mb-4 rounded-lg" />}
       <hr className="border-t border-gray-600 mb-4" />
       <div className="text-gray-400 flex items-center justify-between mb-4">
         <span>183,982 me gustas</span>

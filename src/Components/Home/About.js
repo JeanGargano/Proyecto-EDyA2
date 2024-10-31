@@ -4,7 +4,7 @@ const About = () => {
     const constants = {
         "proyecto": "Foro Web",
         "desarrolladores": [
-            "Ángel del Castillo",
+            "Angel del Castillo",
             "Jean Alfred Gargano",
             "Juan Esteban Salazar"
         ],
