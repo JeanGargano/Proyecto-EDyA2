@@ -1,41 +1,37 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import admin from './firebase-admin.js';
 
-// Obtener el directorio actual en un módulo ES
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const bucket = admin.storage().bucket();
 
-// Directorio donde se guardarán las imágenes (ruta absoluta)
-const uploadDirectory = path.join(__dirname, '../uploads');
-
-// Crea la carpeta si no existe
-if (!fs.existsSync(uploadDirectory)) {
-    fs.mkdirSync(uploadDirectory, { recursive: true });
-}
-
-// Configuración de almacenamiento para multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDirectory); // Guardar en el directorio absoluto
-    },
-    filename: (req, file, cb) => {
-        const uniqueFilename = Date.now() + path.extname(file.originalname); // Nombre único
-        cb(null, uniqueFilename);
-    }
-});
-
-// Configuración de multer
+// Configuración de `multer` para almacenar en memoria
+const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 }, // Límite de 5MB
 });
 
-// Función para convertir a ruta relativa
-export const getRelativeFilePath = (absolutePath) => {
-    return path.relative(path.join(__dirname, '..'), absolutePath).replace(/\\/g, '/');
+// Función para subir archivos a Firebase Storage
+export const uploadImageToFirebase = async (file) => {
+    const fileName = `${uuidv4()}-${file.originalname}`;
+    const blob = bucket.file(fileName);
+    const blobStream = blob.createWriteStream({
+        metadata: {
+            contentType: file.mimetype,
+        },
+    });
+
+    return new Promise((resolve, reject) => {
+        blobStream.on('error', (error) => reject(error));
+
+        blobStream.on('finish', () => {
+            const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
+            resolve(publicUrl);
+        });
+
+        blobStream.end(file.buffer);
+    });
 };
 
-// Exportar el middleware
+// Exportar el middleware de multer
 export default upload;

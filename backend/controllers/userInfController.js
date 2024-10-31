@@ -1,8 +1,7 @@
 import InfoModel from "../models/InfoModel.js";
-import { getRelativeFilePath } from "../Middleware/multer.js";
-import mongoose from "mongoose";
+import { uploadImageToFirebase } from "../Middleware/multer.js";
 
-// Controlador para crear la información del usuario con la foto de perfil
+// Controlador para crear o actualizar la información del usuario con la foto de perfil en Firebase
 export const createInfo = async (req, res) => {
     try {
         const firebaseUid = req.user?.id;
@@ -11,7 +10,12 @@ export const createInfo = async (req, res) => {
         }
 
         const { fullname, profession, email, phone, location } = req.body;
-        const profileImage = req.file ? getRelativeFilePath(req.file.path) : null; // Obtener la ruta relativa
+        let profileImageURL = null;
+
+        // Si se proporciona un archivo, subir la imagen a Firebase y obtener la URL
+        if (req.file) {
+            profileImageURL = await uploadImageToFirebase(req.file);
+        }
 
         // Buscar si ya existe un registro con este firebaseUid
         const existingInfo = await InfoModel.findOne({ firebaseUid });
@@ -23,8 +27,8 @@ export const createInfo = async (req, res) => {
             existingInfo.email = email;
             existingInfo.phone = phone;
             existingInfo.location = location;
-            if (profileImage) {
-                existingInfo.userProfilePath = profileImage; // Actualizar imagen si hay una nueva
+            if (profileImageURL) {
+                existingInfo.userProfilePath = profileImageURL; // Actualizar la URL de la imagen si hay una nueva
             }
             await existingInfo.save();
             return res.status(200).json({ message: 'Información actualizada exitosamente.', updatedInfo: existingInfo });
@@ -38,7 +42,7 @@ export const createInfo = async (req, res) => {
             email, 
             phone, 
             location,
-            userProfilePath: profileImage, // Guardar la ruta de la imagen en la base de datos
+            userProfilePath: profileImageURL // Guardar la URL de la imagen en la base de datos
         });
 
         await newInfo.save();
@@ -48,8 +52,6 @@ export const createInfo = async (req, res) => {
         res.status(500).json({ message: 'Error al crear o actualizar la información.', error: error.message });
     }
 };
-
-
 
 export const updateInfo = async (req, res) => {
     try {
@@ -92,7 +94,9 @@ export const getInfo = async (req, res) => {
             
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
-    
+        
+        console.log(user);
+        
         res.status(200).json({
             fullname: user.fullname,
             profession: user.profession,
@@ -106,7 +110,6 @@ export const getInfo = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor', error });
     }
 };
-
 
 export const getBasicUserInfo = async (req, res) => {
     try {
