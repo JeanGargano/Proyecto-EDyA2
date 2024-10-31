@@ -1,12 +1,5 @@
 import jwt from 'jsonwebtoken';
-import admin from 'firebase-admin';
-
-// Ajusta el path a tu archivo de cuenta de servicio
-const serviceAccount = 'Middleware/serviceAccount.json';
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),  // Usa las credenciales de tu cuenta de servicio
-});
+import admin from './firebase-admin.js';
 
 export const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
