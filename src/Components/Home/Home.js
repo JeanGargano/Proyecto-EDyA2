@@ -1,4 +1,3 @@
-// Home.js
 import '../../Stylesheet/Home/output.css';
 import Navbar from '../Navbar.js';
 import LeftSidebar from './LeftNavbar.js';
@@ -9,6 +8,7 @@ import { fetchUserInfo } from '../UserInfo/service/UserInfService';
 import About from './About.jsx';
 import People from './People.jsx';
 import ButtonChat from './ButtonChat.js';
+
 function Home() {
   const { user } = useAuth();
   console.log("Estas en Home", user);
@@ -22,6 +22,7 @@ function Home() {
   
   const URI_PICTURE_PROFILE = imagenPerfil ? `http://localhost:8000/${imagenPerfil}` : '';
   const [activeComponent, setActiveComponent] = useState('PostFeed');
+  const [componentKey, setComponentKey] = useState(0); // Estado para forzar el reinicio
 
   useEffect(() => {
     const obtenerInformacionUsuario = async () => {
@@ -41,20 +42,25 @@ function Home() {
 
   const renderActiveComponent = () => {
     if (activeComponent === 'PostFeed') {
-      return <PostFeed URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} depends={false} />;
+      return <PostFeed key={componentKey} URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} depends={false} />;
     } else if (activeComponent === 'About') {
-      return <About />;
+      return <About key={componentKey} />;
     } else if (activeComponent === 'MyPosts') {
-      return <PostFeed URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} depends={true} />;
+      return <PostFeed key={componentKey} URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} depends={true} />;
     } else if (activeComponent === 'People') {
-      return <People />;
+      return <People key={componentKey} />;
     }
+  };
+
+  // Función para cambiar el componente y forzar el reinicio
+  const changeComponent = (component) => {
+    setActiveComponent(component);
+    setComponentKey(prevKey => prevKey + 1); // Aumentar la clave para forzar un nuevo render
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        {/* Ajustamos el Navbar para ser fijo en la parte superior */}
         <nav className="fixed top-0 left-0 w-full z-50">
           <Navbar 
             URI_PICTURE_PROFILE={URI_PICTURE_PROFILE}
@@ -62,20 +68,19 @@ function Home() {
           />
         </nav>
         
-        {/* Agregamos un margen superior para que el contenido quede debajo del Navbar */}
         <div className="contenedor-feed pt-16 flex">
           <LeftSidebar 
             nombreCompleto={nombreCompleto}
             URI={URI_PICTURE_PROFILE}
-            setActiveComponent={setActiveComponent}
+            setActiveComponent={changeComponent} // Cambia la función pasada
           />
           <div className="w-full flex-1">
             {renderActiveComponent()}
           </div>
         </div>
         <div>
-            <ButtonChat/>
-          </div>
+          <ButtonChat/>
+        </div>
       </header>
     </div>
   );

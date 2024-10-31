@@ -4,7 +4,7 @@ import axios from 'axios';
 import Post from './Post';
 import Publisher from '../Publisher';
 
-const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
+const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
   const [posts, setPosts] = useState([]);
   const [userToken, setUserToken] = useState(null);
   const GET_POSTS_URI = 'http://localhost:8000/posts';
@@ -19,8 +19,6 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
     });
     return () => unsubscribe();
   }, []);
-
-  console.log(depends)
 
   const fetchPosts = async () => {
     try {
@@ -47,6 +45,7 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
       console.error('Error al obtener las publicaciones:', error);
     }
   };
+
   const fetchUserPosts = async () => {
     if (!firebaseUid) return; // No hacer fetch si no hay firebaseUid
     try {
@@ -63,9 +62,9 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
 
   useEffect(() => {
     if (userToken) {
-      if(depends) {
+      if (depends) {
         fetchMyPosts();
-      }else if (firebaseUid) {
+      } else if (firebaseUid) {
         fetchUserPosts();
       } else {
         fetchPosts();
@@ -79,8 +78,6 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
       const formData = new FormData();
       formData.append("content", content); // Añadir el contenido
       if (selectedFile) formData.append("file", selectedFile); // Añadir el archivo si existe
-      console.log(Array.from(formData.entries()));
-      console.log(content);
       await axios.post(`${GET_POSTS_URI}/create-post`, formData, {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -92,7 +89,6 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
       console.error('Error al crear la publicación:', error);
     }
   };
-  
 
   const handleDeletePostClick = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este post?')) {
@@ -122,30 +118,37 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid}) => {
       console.error('Error al agregar comentario:', error);
     }
   };
-  
-  console.log(URI_PICTURE_PROFILE)
- 
+
   return (
-  <div>
-    <Publisher onPublish={handlePublish} URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE} />
-    {posts.map((post) => (
-      <Post
-        key={post._id}
-        id={post._id}
-        content={post.content}
-        authorName={post.authorName}
-        createdAt={post.createdAt}
-        userProfilePath={post.userProfilePath}
-        userToken={userToken}
-        commentsData={post.comments}
-        onAddComment={(commentText) => handleAddComment(post._id, commentText)} // Pasa handleAddComment con el id del post
-        handleDeletePostClick={handleDeletePostClick} 
-        fetchPosts={fetchPosts}
-        postPicturePath={post.PicturePath}
-      />
-    ))}
-  </div>
-);
+    <div>
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <>
+          <Publisher onPublish={handlePublish} URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE} />
+
+          <Post
+            key={post._id}
+            id={post._id}
+            content={post.content}
+            authorName={post.authorName}
+            createdAt={post.createdAt}
+            userProfilePath={post.userProfilePath}
+            userToken={userToken}
+            commentsData={post.comments}
+            onAddComment={(commentText) => handleAddComment(post._id, commentText)} // Pasa handleAddComment con el id del post
+            handleDeletePostClick={handleDeletePostClick} 
+            postPicturePath={post.PicturePath}
+          />
+          </>
+        ))
+      ) : (
+        <div className="text-center mt-4 text-gray-600">
+          <h2 className="text-lg font-bold">No hay publicaciones disponibles.</h2>
+          <p>Este usuario aún no ha realizado ninguna publicación.</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default PostFeed;
