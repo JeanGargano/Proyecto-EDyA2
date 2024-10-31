@@ -13,9 +13,7 @@ const Comment = ({ comment, onReply, userToken }) => { // Recibe userToken como 
     setShowReplyInput(false);
   };
 
-  console.log(comment);
-
-  const URI_PICTURE_PROFILE = comment.userProfilePath ? `http://localhost:8000/${comment.userProfilePath}` : '';
+  const URI_PICTURE_PROFILE = comment.userProfilePath;
 
   return (
     <div className="bg-[#182637] p-3 rounded-lg mb-4">

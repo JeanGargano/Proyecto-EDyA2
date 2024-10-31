@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import '../../Stylesheet/Login/Login.css';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Context/AuthProvider';
+import { useAuth } from '../../Context/AuthProvider.js';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from '../../Firebase.js'; // Asegúrate de que esta ruta sea correcta
-
+import { app } from '../../Firebase/Firebase.js'; // Asegúrate de que esta ruta sea correcta
 
 export function Login() {
   const [user, setUser] = useState({

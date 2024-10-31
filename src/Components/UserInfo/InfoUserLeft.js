@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import ProfileImageModal from '../ProfileImageModal'; // Asegúrate de la ruta correcta
+import ProfileImageModal from '../../Shared/ProfileImageModal'; // Asegúrate de la ruta correcta
 import {useNavigate} from 'react-router-dom';
+
 const InfoUserLeft = ({ nombreCompleto, profesion, imagenPerfil }) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const URI = `http://localhost:8000/${imagenPerfil}`;
+    const URI = imagenPerfil
     const navigate = useNavigate();
 
     const toggleModal = () => {

@@ -1,18 +1,15 @@
-// UserInfo.js
 import { useEffect, useState } from 'react';
-import InfoUserLeft from './InfoUserLeft';
-import Form from './form';
-import { fetchUserInfo } from './service/UserInfService';
-import Navbar from '../Navbar';
+import InfoUserLeft from '../../Components/UserInfo/InfoUserLeft';
+import Form from '../../Components/UserInfo/form';
+import { fetchUserInfo } from '../../Components/UserInfo/service/UserInfService';
+import Navbar from '../../Shared/Navbar';
 
 function UserInfo() {
     const [nombreCompleto, setNombreCompleto] = useState('');
     const [profesion, setProfesion] = useState('');
-    const [email, setEmail] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [ubicacion, setUbicacion] = useState('');
     const [imagenPerfil, setImagenPerfil] = useState('');
     const [UserInfo, setUserInfo] = useState({});
+    
 
     const actualizarNombreCompleto = (nombre) => setNombreCompleto(nombre);
     const actualizarProfesion = (profesion) => setProfesion(profesion);
@@ -22,12 +19,9 @@ function UserInfo() {
             const userInfo = await fetchUserInfo();
             if (userInfo) {
                 setUserInfo(userInfo);
-                const { fullname, profession, email, phone, location, profileImage } = userInfo;
+                const { fullname, profession, profileImage } = userInfo;
                 setNombreCompleto(fullname);
                 setProfesion(profession);
-                setEmail(email);
-                setTelefono(phone);
-                setUbicacion(location);
                 setImagenPerfil(profileImage);
             }
         };
@@ -35,9 +29,10 @@ function UserInfo() {
         obtenerInformacionUsuario();
     }, []);
 
-    const URI_PICTURE_PROFILE = imagenPerfil ? `http://localhost:8000/${imagenPerfil}` : '';
+    const URI_PICTURE_PROFILE = imagenPerfil;
 
     return (
+    <div className="pt-12">
         <>
         <Navbar 
             URI_PICTURE_PROFILE={URI_PICTURE_PROFILE}
@@ -49,14 +44,12 @@ function UserInfo() {
                 <Form
                     onActualizarNombre={actualizarNombreCompleto}
                     onActualizarProfesion={actualizarProfesion}
-                    setEmail={setEmail}
-                    setTelefono={setTelefono}
-                    setUbicacion={setUbicacion}
                     userInfo={UserInfo}
                 />
             </div>
         </div>
         </>
+    </div>
     );
 }
 

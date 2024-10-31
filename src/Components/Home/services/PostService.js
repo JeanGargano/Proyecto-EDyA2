@@ -35,3 +35,11 @@ export const handleAddReply = async (postId, commentId, replyText, setComments, 
     console.error('Error al agregar respuesta:', error);
   }
 };
+
+export const fetchPosts = async (URI) => {
+  try {
+    return await axios.get(URI);
+  } catch (error) {
+    console.error('Error al obtener las publicaciones:', error);
+  }
+};

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import '../Stylesheet/Home/Navbar.css';
+import '../Stylesheet/Home/index.css';
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../Firebase.js";
-import ProfileImageModal from "./ProfileImageModal";
+import { auth } from "../Firebase/Firebase.js";
+import ProfileImageModal from "../Shared/ProfileImageModal.js";
 
 export default function Navbar({ URI_PICTURE_PROFILE, nombreCompleto }) {
     const navigate = useNavigate();
@@ -12,9 +12,7 @@ export default function Navbar({ URI_PICTURE_PROFILE, nombreCompleto }) {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            console.log("Antes de eliminar el token", localStorage.getItem("token"));
             localStorage.removeItem("token");
-            console.log("Después de eliminar el token", localStorage.getItem("token"));
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
@@ -34,19 +32,21 @@ export default function Navbar({ URI_PICTURE_PROFILE, nombreCompleto }) {
 
     return (
         <>
-            <nav className="fixed top-0 left-0 w-full z-50 bg-white border-gray-200 dark:bg-gray-900 ColorPage">
+            <nav className="fixed top-0 left-0 w-full z-50 bg-[#182637] border-gray-200 dark:bg-gray-900 ColorPage">
                 <div className="flex items-center justify-between mx-0 px-5 py-4">
                     
                     {/* Sección de perfil - Foto y nombre alineados a la izquierda */}
                     <div className="flex items-center " >
-                        <img src={URI_PICTURE_PROFILE} alt="User name" className="w-12 h-12 rounded-full" />
+                        <button onClick={redirectInfo}>
+                            <img src={URI_PICTURE_PROFILE} alt="User name" className="w-12 h-12 rounded-full" />
+                        </button>
                         <span className="text-white text-lg font-semibold ml-2">{nombreCompleto}</span>
                     </div>
 
                     {/* Logo al centro */}
                     <button onClick={redirectFeed} className="flex items-center">
                         <img src="/media/picture/logo.png" className="h-8" alt="Logo" />
-                        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Icon</span>
+                        <span className="self-center text-2xl text-white font-semibold whitespace-nowrap dark:text-white">Icon</span>
                     </button>
 
                     {/* Menú de usuario y botón de logout a la derecha */}

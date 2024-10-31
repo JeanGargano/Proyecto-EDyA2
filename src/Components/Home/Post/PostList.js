@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Post from './Post';
+import { fetchPosts } from './services/PostService';
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
-  const URI = 'http://localhost:8000/posts/'; // Asegúrate de que la URL sea la correcta
-
+  const URI = process.env.REACT_APP_API_URL + '/posts/'; ; // Asegúrate de que la URL sea la correcta
+  
   // Función para obtener publicaciones desde la API
-  const fetchPosts = async () => {
-    try {
-      const response = await axios.get(URI);
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error al obtener las publicaciones:', error);
-    }
-  };
 
-  // Llamar a fetchPosts al montar el componente
+
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    const obtenerPosts = async () => {
+      const reponse = await fetchPosts(URI);
+      if(reponse){
+      setPosts(reponse.data);
+      }
+  };
+  obtenerPosts();
+}, []);
 
-  // Función para eliminar una publicación por su ID
   const handleDeletePost = async (id) => {
     try {
-      await axios.delete(`${URI}${id}`); // Eliminar el post en la API
-      setPosts(posts.filter(post => post._id !== id)); // Actualizar el estado local
+      await axios.delete(`${URI}${id}`);
+      setPosts(posts.filter(post => post._id !== id));
     } catch (error) {
       console.error('Error al eliminar la publicación:', error);
     }

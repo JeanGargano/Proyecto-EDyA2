@@ -5,13 +5,21 @@ import Comment from './Comment';
 import { formatDistanceToNow } from 'date-fns'; // Importa formatDistanceToNow
 
 
-const Post = ({ id, content, handleDeletePostClick, userToken, authorName, createdAt , userProfilePath, commentsData, fetchPosts, postPicturePath }) => { 
+const Post = ({ id, 
+  content, 
+  handleDeletePostClick, 
+  userToken, 
+  authorName, 
+  createdAt , 
+  userProfilePath, 
+  commentsData, 
+  fetchPosts, 
+  postPicturePath }) => { 
+  
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
-  const URI_PICTURE_PROFILE = userProfilePath ? `http://localhost:8000/${userProfilePath}` : '';
   const commentsDataUpload = commentsData;
-  const URI_FILE_POST = postPicturePath ? `http://localhost:8000/${postPicturePath}` : '';
   const handleCommentSubmit = async () => {
     if (comment.trim() !== '') {
       await handleAddComment(id, comment, setComments, setComment, userToken);
@@ -32,7 +40,7 @@ const Post = ({ id, content, handleDeletePostClick, userToken, authorName, creat
         {showOptions && (
           <div className="bg-gray-700 text-white rounded shadow-lg mt-2 absolute right-0">
             <button
-              onClick={() => handleDeletePostClick(id)}
+              onClick={() => handleDeletePostClick(id, userToken)}
               className="block px-4 py-2 text-left text-red-500 hover:bg-gray-600 w-full"
             >
               Eliminar
@@ -42,7 +50,7 @@ const Post = ({ id, content, handleDeletePostClick, userToken, authorName, creat
       </div>
 
       <div className="flex items-center mb-4">
-      <img src={URI_PICTURE_PROFILE || '/media/picture/images.png'} alt="Usuario" className="w-12 h-12 rounded-full mr-4" />
+      <img src={userProfilePath || '/media/picture/images.png'} alt="Usuario" className="w-12 h-12 rounded-full mr-4" />
         <div>
           <h2 className="text-orange-400 font-semibold">{authorName}</h2> {/* Mostrar nombre del usuario */}
           <span className="text-gray-400 text-sm">{timeAgo} <i className="fas fa-globe-americas"></i></span> {/* Mostrar tiempo transcurrido */}

@@ -9,7 +9,7 @@ const SidebarItem = ({ icon, label, onClick }) => (
   </button>
 );
 
-const LeftSidebar = ({ nombreCompleto, URI, setActiveComponent }) => {
+const LeftNavbar = ({ setActiveComponent }) => {
   const navigate = useNavigate();
 
   // Modificado para cambiar el componente activo al mismo tiempo que navega
@@ -51,4 +51,4 @@ const LeftSidebar = ({ nombreCompleto, URI, setActiveComponent }) => {
   );
 };
 
-export default LeftSidebar;
+export default LeftNavbar;

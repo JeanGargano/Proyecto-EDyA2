@@ -1,14 +1,16 @@
-import { getAuth } from "firebase/auth";
+// src/Components/PostFeed.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getAuth } from 'firebase/auth';
 import Post from './Post';
 import Publisher from '../Publisher';
+import { getPosts, getMyPosts, getUserPosts, createPost, deletePost, addComment } from '../services/PostFeedService';
 
 const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
   const [posts, setPosts] = useState([]);
   const [userToken, setUserToken] = useState(null);
-  const GET_POSTS_URI = 'http://localhost:8000/posts';
 
+  const URI_PICTURE_PROFILE_PUBLISHER = URI_PICTURE_PROFILE;
+  
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -21,99 +23,51 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
   }, []);
 
   const fetchPosts = async () => {
-    try {
-      const response = await axios.get(GET_POSTS_URI, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error al obtener las publicaciones:', error);
-    }
-  };
-
-  const fetchMyPosts = async () => {
-    try {
-      const response = await axios.get(`${GET_POSTS_URI}/${getAuth().currentUser.uid}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error al obtener las publicaciones:', error);
-    }
-  };
-
-  const fetchUserPosts = async () => {
-    if (!firebaseUid) return; // No hacer fetch si no hay firebaseUid
-    try {
-      const response = await axios.get(`${GET_POSTS_URI}/${firebaseUid}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error al obtener las publicaciones del usuario específico:', error);
+    if (userToken) {
+      const userId = getAuth().currentUser?.uid;
+      try {
+        if (depends && userId) {
+          const myPosts = await getMyPosts(userToken, userId);
+          setPosts(myPosts);
+        } else if (firebaseUid) {
+          const userPosts = await getUserPosts(userToken, firebaseUid);
+          setPosts(userPosts);
+        } else {
+          const allPosts = await getPosts(userToken);
+          setPosts(allPosts);
+        }
+      } catch (error) {
+        console.error('Error al obtener las publicaciones:', error);
+      }
     }
   };
 
   useEffect(() => {
-    if (userToken) {
-      if (depends) {
-        fetchMyPosts();
-      } else if (firebaseUid) {
-        fetchUserPosts();
-      } else {
-        fetchPosts();
-      }
-    }
-  }, [userToken, depends]);
+    fetchPosts();
+  }, [userToken, depends, firebaseUid]);
 
   const handlePublish = async (content, selectedFile) => {
-    if (!userToken) return console.error('Error: Usuario no autenticado');
     try {
-      const formData = new FormData();
-      formData.append("content", content); // Añadir el contenido
-      if (selectedFile) formData.append("file", selectedFile); // Añadir el archivo si existe
-      await axios.post(`${GET_POSTS_URI}/create-post`, formData, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "multipart/form-data", // Asegura el tipo de contenido correcto
-        },
-      });
-      fetchPosts(); // Obtener posts de nuevo para actualizar
+      await createPost(userToken, content, selectedFile);
+      fetchPosts(); // Refresca las publicaciones después de publicar
     } catch (error) {
       console.error('Error al crear la publicación:', error);
     }
   };
 
   const handleDeletePostClick = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este post?')) {
-      try {
-        await axios.delete(`${GET_POSTS_URI}/${id}`, {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-        setPosts((prevPosts) => prevPosts.filter(post => post._id !== id));
-      } catch (error) {
-        console.error('Error al eliminar el post:', error);
-      }
+    try {
+      await deletePost(userToken, id);
+      setPosts((prevPosts) => prevPosts.filter(post => post._id !== id));
+    } catch (error) {
+      console.error('Error al eliminar el post:', error);
     }
   };
 
   const handleAddComment = async (postId, commentText) => {
-    if (!userToken) return console.error('Error: Usuario no autenticado');
     try {
-      await axios.post(`${GET_POSTS_URI}/${postId}/comment`, { commentText }, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      fetchPosts(); // Refrescar posts para mostrar el nuevo comentario
+      await addComment(userToken, postId, commentText);
+      fetchPosts(); // Refresca las publicaciones después de agregar un comentario
     } catch (error) {
       console.error('Error al agregar comentario:', error);
     }
@@ -121,11 +75,9 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
 
   return (
     <div>
+      <Publisher onPublish={handlePublish} URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE_PUBLISHER} />
       {posts.length > 0 ? (
         posts.map((post) => (
-          <>
-          <Publisher onPublish={handlePublish} URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE} />
-
           <Post
             key={post._id}
             id={post._id}
@@ -135,11 +87,11 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
             userProfilePath={post.userProfilePath}
             userToken={userToken}
             commentsData={post.comments}
-            onAddComment={(commentText) => handleAddComment(post._id, commentText)} // Pasa handleAddComment con el id del post
-            handleDeletePostClick={handleDeletePostClick} 
+            onAddComment={(commentText) => handleAddComment(post._id, commentText)}
+            handleDeletePostClick={handleDeletePostClick}
             postPicturePath={post.PicturePath}
+            fetchPosts={fetchPosts}
           />
-          </>
         ))
       ) : (
         <div className="text-center mt-4 text-gray-600">
@@ -149,6 +101,6 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
       )}
     </div>
   );
-}
+};
 
 export default PostFeed;

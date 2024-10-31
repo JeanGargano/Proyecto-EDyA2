@@ -3,9 +3,7 @@ import React from 'react';
 
 const Reply = ({replyItem}) => {
 
-  const URI_PICTURE_PROFILE = replyItem.userProfilePath ? `http://localhost:8000/${replyItem.userProfilePath}` : '';{
-
-  }
+  const URI_PICTURE_PROFILE = replyItem.userProfilePath 
   return (
     <div className="bg-[#182637] p-2 rounded-lg mb-2">
       <div className="flex items-start space-x-2">
