@@ -7,7 +7,6 @@ const UserList = () => {
     const [error, setError] = useState(null);
     const [selectedUserUid, setSelectedUserUid] = useState(null); // Estado para manejar el uid del usuario seleccionado
     const [imagenPerfil, setImagenPerfil] = useState('');
-    const URI_PICTURE_PROFILE =  `http://localhost:8000/${imagenPerfil}` ;
     const [noPosts, setNoPosts] = useState(false);
 
     useEffect(() => {
@@ -26,9 +25,6 @@ const UserList = () => {
         return <p className="text-red-500 text-center mt-4">{error}</p>;
     }
 
-    // URL base de tu backend
-    const BASE_URL = 'http://localhost:8000/'; // Cambia esto según tu configuración
-
     // Maneja el clic en el botón "Ver Publicaciones"
     const handleViewPosts = (firebaseUid) => {
         setSelectedUserUid(firebaseUid); // Establece el uid del usuario seleccionado
@@ -43,9 +39,9 @@ const UserList = () => {
     if (selectedUserUid) {
         // Suponiendo que `posts` es el estado que maneja las publicaciones en PostFeed
         return (
-            <div className="flex flex-col items-center pb-6">
+            <div>
                 <PostFeed 
-                    URI_PICTURE_PROFILE={URI_PICTURE_PROFILE} 
+                    URI_PICTURE_PROFILE={imagenPerfil} 
                     firebaseUid={selectedUserUid} 
                     onNoPosts={() => setNoPosts(true)} // Callback para manejar la ausencia de publicaciones
                 />
@@ -80,7 +76,7 @@ const UserList = () => {
                         >
                             <div className="flex items-center">
                                 <img
-                                    src={`${BASE_URL}${user.userProfilePath}` || '/media/picture/images.png'} 
+                                    src={`${user.userProfilePath}` || '/media/picture/images.png'} 
                                     alt={user.fullname}
                                     className="w-12 h-12 rounded-full"
                                 />

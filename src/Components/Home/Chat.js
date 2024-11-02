@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { realtimeDb } from '../../Firebase/Firebase';
 import { ref, push, onValue, serverTimestamp } from 'firebase/database';
 import {colors} from "./constants/index"
+
 const Chat = ({ userName }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');

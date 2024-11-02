@@ -75,8 +75,15 @@ const PostFeed = ({ URI_PICTURE_PROFILE, depends, firebaseUid }) => {
 
   return (
     <div>
-      <Publisher onPublish={handlePublish} URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE_PUBLISHER} />
-      {posts.length > 0 ? (
+        {!firebaseUid ? (
+        <Publisher 
+          onPublish={handlePublish} 
+          URI_PICTURE_PROFILE_PUBLISHER={URI_PICTURE_PROFILE_PUBLISHER} 
+        />
+      ) : (
+        <div></div>
+      )}
+        {posts.length > 0 ? (
         posts.map((post) => (
           <Post
             key={post._id}
