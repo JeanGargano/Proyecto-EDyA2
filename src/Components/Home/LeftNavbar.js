@@ -1,6 +1,8 @@
 import React from 'react';
 import '../../Stylesheet/Home/LeftNavbar.css';
 import { useNavigate } from "react-router-dom";
+import Chat from './Chat';
+import ButtonChat from './ButtonChat';
 
 const SidebarItem = ({ icon, label, onClick }) => (
   <button onClick={onClick} className="px-6 py-2 border rounded-r-lg border-orange-600 text-black font-bold transform hover:-translate-y-1 transition duration-400 hover:underline decoration-white hover:bg-orange-800">
@@ -12,9 +14,8 @@ const SidebarItem = ({ icon, label, onClick }) => (
 const LeftNavbar = ({ setActiveComponent }) => {
   const navigate = useNavigate();
 
-  // Modificado para cambiar el componente activo al mismo tiempo que navega
   const handleClick = () => {
-    setActiveComponent('Profile'); // Cambia a 'Profile' o el nombre del componente correspondiente
+    setActiveComponent('Profile');
     navigate('/info');
   };
 
@@ -29,7 +30,7 @@ const LeftNavbar = ({ setActiveComponent }) => {
         <SidebarItem
           icon={<span className="text-orange-400">✎</span>}
           label="Sobre nosotros"
-          onClick={() => setActiveComponent('About')} 
+          onClick={() => setActiveComponent('About')}
         />
         <SidebarItem
           icon={<span className="text-orange-400">📣</span>}
@@ -46,6 +47,9 @@ const LeftNavbar = ({ setActiveComponent }) => {
           label="Personas"
           onClick={() => setActiveComponent('People')}
         />
+      </div>
+      <div>
+        <ButtonChat />
       </div>
     </div>
   );

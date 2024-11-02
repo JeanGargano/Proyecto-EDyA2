@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { fetchUserInfo } from '../../Components/UserInfo/service/UserInfService.js';
 import About from '../../Components/Home/About.js';
 import People from '../../Components/Home/People.js';
-import ButtonChat from '../../Components/Home/ButtonChat.js';
+import Chat from '../../Components/Home/Chat.js';
 
 function Home() {
   
@@ -63,8 +63,10 @@ function Home() {
           </div>
         </div>
         <div>
-            <ButtonChat/>
-          </div>
+          <Chat
+          userName = {nombreCompleto}
+          />
+        </div>
       </header>
     </div>
   );
