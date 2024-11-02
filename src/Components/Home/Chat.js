@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { realtimeDb } from '../../Firebase/Firebase';
 import { ref, push, onValue, serverTimestamp } from 'firebase/database';
-
+import {colors} from "./constants/index"
 const Chat = ({ userName }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
- 
+  const userColors = {};
+
   useEffect(() => {
     const messagesRef = ref(realtimeDb, 'messages');
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
-      const messagesArray = data ? Object.entries(data).map(([id, msg]) => ({ id, ...msg })) : [];
+      const messagesArray = data ? Object.entries(data).map(([id, msg]) => {
+        // Asignar color si el usuario no lo tiene
+        if (!userColors[msg.sender]) {
+          userColors[msg.sender] = colors[Math.floor(Math.random() * colors.length)];
+        }
+        return { id, ...msg, color: userColors[msg.sender] };
+      }) : [];
       setMessages(messagesArray);
     });
   }, []);
+
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
@@ -33,14 +41,21 @@ const Chat = ({ userName }) => {
         Chat en Vivo
       </div>
 
-      <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-800 rounded-t-lg">
+      <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-800 rounded-t-lg
+                      max-h-[400px] 
+                      [&::-webkit-scrollbar]:w-2
+                    [&::-webkit-scrollbar-track]:bg-gray-800
+                    [&::-webkit-scrollbar-thumb]:bg-gray-300
+                      [&::-webkit-scrollbar-thumb]:rounded-full
+                      ">
+
         {messages.map((message) => (
           <div
             key={message.id}
             className={`p-3 rounded-lg ${message.sender === 'User' ? 'text-right ml-auto' : 'text-left mr-auto'
               }`}
           >
-            <p className={`text-sm font-medium text-gray-400`}>{message.sender.userName || message.sender}</p>
+            <p className={`text-sm font-medium ${message.color}`}>{message.sender.userName || message.sender}</p>
             <p className="text-base">{message.text}</p>
           </div>
         ))}

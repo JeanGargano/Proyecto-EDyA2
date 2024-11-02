@@ -23,3 +23,12 @@ export const constants = {
     "github": "https://github.com/JeanGargano/Proyecto-EDyA2.git",
     "canva": "https://www.canva.com/design/DAGNv-RwjlI/vLDjnZM_OXW0efxMU-5u5Q/edit",
 };
+
+export const colors = [
+    'text-red-500', // Rojo
+    'text-blue-500', // Azul
+    'text-green-500', // Verde
+    'text-yellow-500', // Amarillo
+    'text-purple-500', // Púrpura
+  ];
+  
