@@ -11,8 +11,8 @@ const ButtonChat = () => {
 
     return (
         <>
-            <button onClick={toggleChatBot} className="chatbot-button">
-                <img src="/media/picture/cb.png" alt="Abrir ChatBot" />
+            <button onClick={toggleChatBot} className="chatbot-button ">
+                <img src="/media/picture/chatboticon.png" alt="Abrir ChatBot" className='hover:shadow-lg hover:shadow-white bg-gray-700'/>
             </button>
             {showChatBot && (
                 <div className='ChatBot'>

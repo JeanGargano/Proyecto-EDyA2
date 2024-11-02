@@ -32,7 +32,7 @@ export default function Navbar({ URI_PICTURE_PROFILE, nombreCompleto }) {
 
     return (
         <>
-            <nav className="fixed top-0 left-0 w-full z-50 bg-[#182637] border-gray-200 dark:bg-gray-900 ColorPage">
+            <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900 border-gray-200 dark:bg-gray-900 ColorPage">
                 <div className="flex items-center justify-between mx-0 px-5 py-4">
                     
                     {/* Sección de perfil - Foto y nombre alineados a la izquierda */}

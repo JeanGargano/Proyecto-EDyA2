@@ -63,7 +63,7 @@ function Home() {
           </div>
         </div>
         <div>
-          <Chat
+          <Chat 
           userName = {nombreCompleto}
           />
         </div>
