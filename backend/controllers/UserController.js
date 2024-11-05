@@ -1,8 +1,11 @@
 import User from '../models/UserModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';  // Importamos jsonwebtoken
+import dotenv from 'dotenv';  // Importamos dotenv para acceder a las variables de entorno
 
-const JWT_SECRET = 'Testing';  // Definir una clave secreta (guárdala en las variables de entorno)
+
+
+const JWT_SECRET = process.env.JWT_SECRET  // Definir una clave secreta (guárdala en las variables de entorno)
 
 // Crear nuevo usuario
 export const registerUser = async (req, res) => {
