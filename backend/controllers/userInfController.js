@@ -95,8 +95,6 @@ export const getInfo = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
         
-        console.log(user);
-        
         res.status(200).json({
             fullname: user.fullname,
             profession: user.profession,

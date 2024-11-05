@@ -28,7 +28,7 @@ const Publisher = ({ onPublish, URI_PICTURE_PROFILE_PUBLISHER }) => {
   };
   
   return (
-    <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10">
+    <div className="bg-[#182637] p-4 rounded-lg max-w-xl mx-auto mt-10 py-10">
       <div className="flex items-center space-x-4 mb-4">
         <img
           src={URI_PICTURE_PROFILE_PUBLISHER || '/media/picture/images.png'}

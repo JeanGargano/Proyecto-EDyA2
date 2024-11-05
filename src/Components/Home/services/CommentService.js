@@ -52,3 +52,35 @@ export const addReply = async (postId, commentId, replyText, userToken) => {
     throw error;
   }
 };
+
+export const deleteComment = async (userToken, postId, commentId ) => {
+  try {
+    const response = await axios.delete(
+      `${URI}${postId}/comments/${commentId}`, 
+      { headers: { Authorization: `Bearer ${userToken}` } } // Agregar token en los headers
+    );
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Error al eliminar el comentario');
+    }
+  } catch (error) {
+    console.error('Error al eliminar el comentario:', error);
+    throw error;
+  }
+}
+
+export const deleteReply = async (postId, commentId, replyId, userToken) => {
+  try {
+    const response = await axios.delete(
+      `${URI}${postId}/comments/${commentId}/replies/${replyId}`, 
+      { headers: { Authorization: `Bearer ${userToken}` } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar la respuesta:', error);
+    throw error;
+  }
+};
+
+

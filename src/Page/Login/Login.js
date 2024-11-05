@@ -27,14 +27,12 @@ export function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    console.log("Datos enviados:", user); // Agregado para depuración
 
     try {
       // Utilizar la función de inicio de sesión de Firebase
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, user.correo, user.contrasena);
       
-      console.log("Usuario autenticado:", userCredential.user);
       navigate('/home'); // Navega solo si la autenticación es exitosa
     } catch (error) {
       setError(error.message || 'Error al iniciar sesión');

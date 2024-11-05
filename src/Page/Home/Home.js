@@ -32,11 +32,11 @@ function Home() {
     if (activeComponent === 'PostFeed') {
       return <PostFeed URI_PICTURE_PROFILE={imagenPerfil} depends={false} />;
     } else if (activeComponent === 'About') {
-      return <About />;
+      return <About/>;
     } else if (activeComponent === 'MyPosts') {
       return <PostFeed URI_PICTURE_PROFILE={imagenPerfil} depends={true} />;
     } else if (activeComponent === 'People') {
-      return <People />;
+      return <People/>;
     }
   };
 

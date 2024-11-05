@@ -6,6 +6,8 @@ import {
     deletePost, 
     addComment, 
     addReply,
+    deleteComment,
+    deleteReply
 } from '../controllers/postController.js';
 
 import { createInfo, updateInfo, getInfo, getBasicUserInfo } from '../controllers/userInfController.js';
@@ -23,7 +25,10 @@ router.post('/create-post',verifyToken, upload.single('file'), createPost);     
 //router.put('/:id',verifyToken, updatePost);         // Actualizar un post por ID
 router.delete('/:id',verifyToken, deletePost);      // Eliminar un post por ID
 //router.get('/pictures',verifyToken, getPostsController); // Obtener posts con fotos de perfil
+
 // Rutas para manejar comentarios y respuestas
+router.delete('/:id/comments/:commentId',verifyToken, deleteComment); // Eliminar un comentario
+router.delete('/:id/comments/:commentId/replies/:replyId',verifyToken, deleteReply); // Eliminar una respuesta
 router.post('/:id/comments',verifyToken, addComment); // Agregar un comentario a un post
 //router.get('/:id/comments',verifyToken, getCommentsByPostId); // Obtener todos los comentarios de un post
 router.post('/:id/comments/:commentId/replies',verifyToken, addReply); // Agregar una respuesta a un comentario

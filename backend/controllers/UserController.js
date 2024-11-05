@@ -7,7 +7,7 @@ const JWT_SECRET = 'Testing';  // Definir una clave secreta (guárdala en las va
 // Crear nuevo usuario
 export const registerUser = async (req, res) => {
   const { nombre, correo, contrasena, firebaseUid } = req.body;
-  console.log("Datos de registro:", req.body); // Verificar los datos recibidos
+
   try {
     // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ correo });
@@ -51,7 +51,7 @@ export const registerUser = async (req, res) => {
 // Controlador para iniciar sesión
 export const loginUser = async (req, res) => {
   const { correo, contrasena } = req.body;
-  console.log("Datos de inicio de sesión:", req.body); // Verificar los datos recibidos
+  
 
   try {
     // Verificar si el usuario existe
@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    console.log("Usuario encontrado:", user); // Verificar el usuario encontrado
+    
 
     // Verificar si la contraseña es correcta
     const isPasswordValid = bcrypt.compareSync(contrasena, user.contrasena);
@@ -75,7 +75,7 @@ export const loginUser = async (req, res) => {
       JWT_SECRET,
       { expiresIn: '1h' }
     );
-    console.log("Token generado:", token); // Verificar el token generado
+    
     // Enviar el token como respuesta
     return res.status(200).json({
       message: 'Inicio de sesión exitoso',

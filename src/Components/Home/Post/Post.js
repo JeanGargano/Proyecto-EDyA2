@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { fetchComments } from '../services/CommentService';
 import { handleAddComment, handleAddReply } from '../services/PostService';
 import Comment from './Comment';
 import ModalPost from '../../../Shared/ModalPost';
 import { formatDistanceToNow } from 'date-fns';
+import { deleteComment, deleteReply } from '../services/CommentService';
 
 const Post = ({ 
   id, 
@@ -32,6 +32,26 @@ const Post = ({
       setIsCommentInputVisible(false); // Ocultar campo de comentario después de enviar
     }
   };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(userToken, id, commentId);
+      fetchPosts();
+    } catch (error) {
+      console.error('Error al eliminar el comentario:', error);
+    }
+  };
+
+  const onDeleteReply = async (commentId, replyId) => {
+    try {
+      await deleteReply(id, commentId, replyId, userToken); // Agregamos id como postId
+      fetchPosts();
+    } catch (error) {
+      console.error('Error al eliminar la respuesta:', error);
+    }
+  };
+  
+  
 
   const openModal = (imageUrl) => {
     setModalImageUrl(imageUrl);
@@ -122,11 +142,12 @@ const Post = ({
       {/* Mostrar solo la cantidad de comentarios controlada por visibleComments */}
       {commentsData.sort((a, b) => new Date(b.commentedAt) - new Date(a.commentedAt)).slice(0, visibleComments).map((comment) => (
         <Comment 
-          key={comment._id} 
-          comment={comment} 
-          userToken={userToken}
-          userProfilePath={comment.userProfilePath}
-          onReply={(replyText) => handleAddReply(id, comment._id, replyText, setComments, userToken, fetchPosts)}
+        key={comment._id} 
+        comment={comment} 
+        userToken={userToken}
+        onReply={(replyText) => handleAddReply(id, comment._id, replyText, setComments, userToken, fetchPosts)}
+        onDelete={() => handleDeleteComment(comment._id)} 
+        onDeleteReply={(replyId) => onDeleteReply(comment._id, replyId)} // Ahora se pasa comment._id y replyId
         />
       ))}
       <div className="text-gray-400 flex items-center justify-between mb-4">
